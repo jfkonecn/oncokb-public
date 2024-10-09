@@ -19,6 +19,7 @@ import { FeedbackModal } from './components/feedback/FeedbackModal';
 import { FdaModal } from 'app/components/fdaModal/FdaModal';
 import { Location } from 'history';
 import autobind from 'autobind-decorator';
+import TrackingOptOut from './components/TrackingOptOut';
 
 export type IMainPage = Stores;
 
@@ -136,6 +137,7 @@ class Main extends React.Component<IMainPage> {
             lastDataUpdate={this.props.appStore.appInfo.result.dataVersion.date}
           />
         )}
+        <TrackingOptOut />
       </div>
     );
   }

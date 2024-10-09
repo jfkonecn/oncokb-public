@@ -14,7 +14,6 @@ import { action } from 'mobx';
 import autobind from 'autobind-decorator';
 import { setRecaptchaToken } from './indexUtils';
 import { HelmetProvider } from 'react-helmet-async';
-import TrackingOptOut from './components/TrackingOptOut';
 
 export type Stores = {
   appStore: AppStore;
@@ -103,7 +102,6 @@ class App extends React.Component {
               </Router>
             </Provider>
           }
-          <TrackingOptOut />
         </>
       </HelmetProvider>
     );
