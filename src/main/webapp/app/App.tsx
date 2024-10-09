@@ -1,5 +1,4 @@
 import * as React from 'react';
-import ReactGA from 'react-ga4';
 
 import Main from './Main';
 import AppStore, { IAppConfig } from 'app/store/AppStore';
@@ -14,8 +13,8 @@ import { PAGE_ROUTE } from 'app/config/constants';
 import { action } from 'mobx';
 import autobind from 'autobind-decorator';
 import { setRecaptchaToken } from './indexUtils';
-import { AppConfig } from 'app/appConfig';
 import { HelmetProvider } from 'react-helmet-async';
+import TrackingOptOut from './components/TrackingOptOut';
 
 export type Stores = {
   appStore: AppStore;
@@ -94,11 +93,6 @@ class App extends React.Component {
 
     this.checkHash(history);
 
-    // Install Google Analytics 4 if GA project id is configured on server side
-    if (AppConfig.serverConfig?.googleAnalyticsProjectId) {
-      ReactGA.initialize(AppConfig.serverConfig.googleAnalyticsProjectId);
-    }
-
     return (
       <HelmetProvider>
         <>
@@ -109,6 +103,7 @@ class App extends React.Component {
               </Router>
             </Provider>
           }
+          <TrackingOptOut />
         </>
       </HelmetProvider>
     );
