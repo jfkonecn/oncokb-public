@@ -208,7 +208,7 @@ function createPathogenicityTileProps(
         },
         {
           title: 'Clinvar',
-          value: 'Conflicting Classification',
+          value: 'Clinvar not Implemented',
           link: '#',
         },
       ],
