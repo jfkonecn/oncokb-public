@@ -6,7 +6,7 @@ import {
 } from 'app/shared/utils/UrlUtils';
 import { NewlyAddedGenesListItem } from 'app/pages/newsPage/NewlyAddedGenesListItem';
 
-export default function NewsContent022025() {
+export default function NewsContent022525() {
   return (
     <>
       <ul>
@@ -39,11 +39,14 @@ export default function NewsContent022025() {
               </td>
               <td>Pancreatic Cancer</td>
               <td>
-                <em>Drug(s) promoted in OncoKB™:</em> Erdafitnib (Level 2,
-                previously Level 4)
+                <em>Drug(s) promoted in OncoKB™:</em>
+                <br />
+                Erdafitnib (Level 2, previously Level 4)
                 <br />
                 <br />
-                <em>Drug(s) remaining in OncoKB™:</em> Fexagratinib (Level 4)
+                <em>Drug(s) remaining in OncoKB™:</em>
+                <br />
+                Fexagratinib (Level 4)
               </td>
               <td>4</td>
               <td>2</td>
@@ -62,11 +65,14 @@ export default function NewsContent022025() {
               </td>
               <td>Pancreatic Cancer</td>
               <td>
-                <em>Drug(s) promoted in OncoKB™:</em> Erdafitnib (Level 2,
-                previously Level 4)
+                <em>Drug(s) promoted in OncoKB™:</em>
+                <br />
+                Erdafitnib (Level 2, previously Level 4)
                 <br />
                 <br />
-                <em>Drug(s) remaining in OncoKB™:</em> Fexagratinib (Level 4)
+                <em>Drug(s) remaining in OncoKB™:</em>
+                <br />
+                Fexagratinib (Level 4)
               </td>
               <td>4</td>
               <td>2</td>
@@ -85,12 +91,14 @@ export default function NewsContent022025() {
               </td>
               <td>Non-Small Cell Lung Cancer</td>
               <td>
-                <em>Drug(s) promoted in OncoKB™:</em> Erdafitnib (Level 2,
-                previously Level 4)
+                <em>Drug(s) promoted in OncoKB™:</em>
+                <br />
+                Erdafitnib (Level 2, previously Level 4)
                 <br />
                 <br />
-                <em>Drug(s) remaining in OncoKB™:</em> Fexagratinib,
-                Lirafugratinib (Level 4)
+                <em>Drug(s) remaining in OncoKB™:</em>
+                <br />
+                Fexagratinib, Lirafugratinib (Level 4)
               </td>
               <td>4</td>
               <td>2</td>
@@ -110,11 +118,14 @@ export default function NewsContent022025() {
               </td>
               <td>Non-Small Cell Lung Cancer</td>
               <td>
-                <em>Drug(s) promoted in OncoKB™:</em> Erdafitnib (Level 2,
-                previously Level 4)
+                <em>Drug(s) promoted in OncoKB™:</em>
+                <br />
+                Erdafitnib (Level 2, previously Level 4)
                 <br />
                 <br />
-                <em>Drug(s) remaining in OncoKB™:</em> Fexagratinib (Level 4)
+                <em>Drug(s) remaining in OncoKB™:</em>
+                <br />
+                Fexagratinib (Level 4)
               </td>
               <td>4</td>
               <td>2</td>
@@ -171,10 +182,20 @@ export default function NewsContent022025() {
           </tbody>
         </table>
       </div>
+      <h4></h4>
       <ul>
         <li>
           <NewlyAddedGenesListItem
-            genes={['ALOX5', 'APEX1', 'RPS6KB1', 'TACSTD2']}
+            genes={[
+              'ALOX5',
+              'APEX1',
+              'CBLB',
+              'DHX15',
+              'POLH',
+              'RPS6KB1',
+              'TACSTD2',
+              'WEE1',
+            ]}
           ></NewlyAddedGenesListItem>
         </li>
       </ul>

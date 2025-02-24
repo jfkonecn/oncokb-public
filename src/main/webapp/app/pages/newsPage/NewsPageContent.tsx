@@ -45,7 +45,7 @@ import { PMALink } from 'app/shared/links/PMALink';
 import OptimizedImage from 'app/shared/image/OptimizedImage';
 import { AnnotationColumnHeaderType } from './ChangedAnnotationListItem';
 import { linkableMutationName, convertGeneInputToLinks } from './Util';
-import NewsContent022025 from './code-generated/NewsContent022025';
+import NewsContent022025 from './code-generated/NewsContent022525';
 
 export type ChangedAnnotation = {
   content: (ElementType | ElementType[])[][];
@@ -303,7 +303,7 @@ const EVIDENCE_COLUMN_SEPARATOR = '; ';
 // https://stackoverflow.com/questions/41947168/is-it-possible-to-use-keyof-operator-on-literals-instead-of-interfaces
 
 export const NEWS_BY_DATE: { [date: string]: NewsData } = {
-  '02282025': {
+  '02252025': {
     rawComponent: <NewsContent022025 />,
   },
   '01302025': {
