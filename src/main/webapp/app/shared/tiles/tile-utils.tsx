@@ -15,6 +15,8 @@ import config, {
   ONCOGENICITY,
   MUTATION_EFFECT,
   ONCOKB_TM,
+  GENOME_NEXUS_ANNOTATION_BASE_URL,
+  CLINVAR_VARIANT_BASE_URL,
 } from 'app/config/constants';
 import {
   isPositionalAlteration,
@@ -223,10 +225,8 @@ function createPathogenicityTileProps(
           title: 'ClinVar',
           value: clinvarPathogenicity,
           link:
-            config.CLINVAR_VARIANT_URL &&
-            clinvarData?.clinvarId &&
-            clinvarData?.pathogenicity
-              ? `${config.CLINVAR_VARIANT_URL}/${clinvarData.clinvarId}`
+            clinvarData?.clinvarId && clinvarData?.pathogenicity
+              ? `${CLINVAR_VARIANT_BASE_URL}/${clinvarData.clinvarId}`
               : undefined,
         },
       ],
@@ -269,7 +269,6 @@ export function SomaticGermlineAlterationTiles({
 }: SomaticGermlineAlterationTilesProps) {
   const tiles: AlterationTileProps[] = [];
   const isGermline = rest.isGermline;
-  const genomeNexusAnnotationUrl = config.GENOME_NEXUS_ANNOTATION_URL;
 
   const [clinvar, setClinvar] = useState<ClinvarData | undefined | null>(
     undefined
@@ -277,13 +276,8 @@ export function SomaticGermlineAlterationTiles({
 
   useEffect(() => {
     async function fetchClinvarFromGenomeNexus() {
-      if (!genomeNexusAnnotationUrl) {
-        setClinvar(null);
-        return;
-      }
-
       const response = await axios.get(
-        `${genomeNexusAnnotationUrl}/${rest.variantAnnotation.query.hugoSymbol}:${rest.variantAnnotation.query.alteration}?fields=clinvar`
+        `${GENOME_NEXUS_ANNOTATION_BASE_URL}/${rest.variantAnnotation.query.hugoSymbol}:${rest.variantAnnotation.query.alteration}?fields=clinvar`
       );
       const clinvarAnnotation = response.data.clinvar.annotation;
       if (clinvarAnnotation) {
@@ -299,7 +293,7 @@ export function SomaticGermlineAlterationTiles({
     if (isGermline) {
       fetchClinvarFromGenomeNexus();
     }
-  }, [setClinvar, isGermline, genomeNexusAnnotationUrl]);
+  }, [setClinvar, isGermline, GENOME_NEXUS_ANNOTATION_BASE_URL]);
 
   if (isGermline) {
     tiles.push(
