@@ -134,6 +134,8 @@ module.exports = options => ({
         // If you use an API server, in `prod` mode, you will need to enable CORS
         // (see the `jhipster.cors` common JHipster property in the `application-*.yml` configurations)
         SERVER_API_URL: `''`,
+        GENOME_NEXUS_ANNOTATION_URL: `'${process.env.GENOME_NEXUS_ANNOTATION_URL || ''}'`,
+        CLINVAR_VARIANT_URL: `'${process.env.CLINVAR_VARIANT_URL || ''}'`
       },
     }),
     new ForkTsCheckerWebpackPlugin({

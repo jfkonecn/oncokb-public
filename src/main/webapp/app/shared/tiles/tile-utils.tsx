@@ -11,12 +11,10 @@ import classnames from 'classnames';
 import SomaticGermlineTiles, {
   AlterationTileProps,
 } from './SomaticGermlineTiles';
-import {
+import config, {
   ONCOGENICITY,
   MUTATION_EFFECT,
   ONCOKB_TM,
-  CLINVAR_VARIANT_BASE_URL,
-  GENOME_NEXUS_ANNOTATION_BASE_URL,
 } from 'app/config/constants';
 import {
   isPositionalAlteration,
@@ -203,9 +201,16 @@ function createMutationEffectTileProps(
 
 function createPathogenicityTileProps(
   variantAnnotation: GermlineVariant,
-  clinvarData: ClinvarData | undefined,
+  clinvarData: ClinvarData | undefined | null,
   includeTitle: boolean
 ): AlterationTileProps {
+  let clinvarPathogenicity = '';
+  if (clinvarData === null || clinvarData?.pathogenicity === '') {
+    clinvarPathogenicity = 'Not Available';
+  } else if (clinvarData) {
+    clinvarPathogenicity = clinvarData.pathogenicity;
+  }
+
   return {
     title: includeTitle ? 'Pathogenicity' : undefined,
     items: [
@@ -216,10 +221,13 @@ function createPathogenicityTileProps(
         },
         {
           title: 'ClinVar',
-          value: clinvarData?.pathogenicity || '',
-          link: clinvarData?.clinvarId
-            ? `${CLINVAR_VARIANT_BASE_URL}/${clinvarData.clinvarId}`
-            : undefined,
+          value: clinvarPathogenicity,
+          link:
+            config.CLINVAR_VARIANT_URL &&
+            clinvarData?.clinvarId &&
+            clinvarData?.pathogenicity
+              ? `${config.CLINVAR_VARIANT_URL}/${clinvarData.clinvarId}`
+              : undefined,
         },
       ],
     ],
@@ -253,7 +261,7 @@ type SomaticGermlineAlterationTilesProps = {
   variantAnnotation: VariantAnnotation;
 };
 
-type ClinvarData = { pathogenicity: string; clinvarId: number };
+type ClinvarData = { pathogenicity: string; clinvarId: number | undefined };
 
 export function SomaticGermlineAlterationTiles({
   includeTitle,
@@ -261,13 +269,21 @@ export function SomaticGermlineAlterationTiles({
 }: SomaticGermlineAlterationTilesProps) {
   const tiles: AlterationTileProps[] = [];
   const isGermline = rest.isGermline;
+  const genomeNexusAnnotationUrl = config.GENOME_NEXUS_ANNOTATION_URL;
 
-  const [clinvar, setClinvar] = useState<ClinvarData>();
+  const [clinvar, setClinvar] = useState<ClinvarData | undefined | null>(
+    undefined
+  );
 
   useEffect(() => {
     async function fetchClinvarFromGenomeNexus() {
+      if (!genomeNexusAnnotationUrl) {
+        setClinvar(null);
+        return;
+      }
+
       const response = await axios.get(
-        `${GENOME_NEXUS_ANNOTATION_BASE_URL}/${rest.variantAnnotation.query.hugoSymbol}:${rest.variantAnnotation.query.alteration}?fields=clinvar`
+        `${genomeNexusAnnotationUrl}/${rest.variantAnnotation.query.hugoSymbol}:${rest.variantAnnotation.query.alteration}?fields=clinvar`
       );
       const clinvarAnnotation = response.data.clinvar.annotation;
       if (clinvarAnnotation) {
@@ -275,13 +291,15 @@ export function SomaticGermlineAlterationTiles({
           pathogenicity: clinvarAnnotation.clinicalSignificance,
           clinvarId: clinvarAnnotation.clinvarId,
         });
+      } else {
+        setClinvar(null);
       }
     }
 
     if (isGermline) {
       fetchClinvarFromGenomeNexus();
     }
-  }, [setClinvar, isGermline]);
+  }, [setClinvar, isGermline, genomeNexusAnnotationUrl]);
 
   if (isGermline) {
     tiles.push(
