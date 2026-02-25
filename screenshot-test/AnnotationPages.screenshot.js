@@ -104,6 +104,20 @@ function getScreenshotConfig(name){
   }
 }
 
+async function resetRegistrationCookies(page) {
+  if (!page || page.isClosed()) {
+    return;
+  }
+  try {
+    await page.evaluate(() => {
+      document.cookie = 'page_visit_count=0; Path=/; Max-Age=2592000; SameSite=Lax';
+      document.cookie = 'registration_hover_count=0; Path=/; Max-Age=2592000; SameSite=Lax';
+    });
+  } catch (_error) {
+    // Ignore cleanup errors so they do not mask screenshot assertion failures.
+  }
+}
+
 if (!fs.existsSync(LATEST_SNAPSHOTS_DIR)){
   fs.mkdirSync(LATEST_SNAPSHOTS_DIR);
 }
@@ -448,6 +462,10 @@ describe('Tests with login', () => {
     });
   })
 
+  afterEach(async () => {
+    await resetRegistrationCookies(page);
+  })
+
   it('Gene Page', async() => {
     await page.goto(`${CLIENT_URL}gene/ROS1/somatic`);
     await page.setViewport(VIEW_PORT_1080);
@@ -532,12 +550,42 @@ describe('Tests without login', () => {
     });
   })
 
+  afterEach(async () => {
+    await resetRegistrationCookies(page);
+  })
+
   it('Gene Page', async() => {
     await page.goto(`${CLIENT_URL}gene/ROS1/somatic`);
     await page.setViewport(VIEW_PORT_1080);
     await page.waitFor(LONG_WAITING_TIME);
     let image = await page.screenshot(getScreenshotConfig('Gene Page without Login'));
     expect(image).toMatchImageSnapshot({ customSnapshotIdentifier: 'Gene Page without Login' });
+  })
+
+  it('Gene Page without Login - Registration Nudge', async() => {
+    await page.goto(`${CLIENT_URL}`);
+    await page.evaluate(() => {
+      document.cookie = 'page_visit_count=11; Path=/; Max-Age=2592000; SameSite=Lax';
+      document.cookie = 'registration_hover_count=0; Path=/; Max-Age=2592000; SameSite=Lax';
+    });
+    await page.goto(`${CLIENT_URL}gene/ROS1/somatic`);
+    await page.setViewport(VIEW_PORT_1080);
+    await page.waitFor(LONG_WAITING_TIME);
+    let image = await page.screenshot(getScreenshotConfig('Gene Page without Login - Registration Nudge'));
+    expect(image).toMatchImageSnapshot({ customSnapshotIdentifier: 'Gene Page without Login - Registration Nudge' });
+  })
+
+  it('Gene Page without Login - Registration Hover', async() => {
+    await page.goto(`${CLIENT_URL}`);
+    await page.evaluate(() => {
+      document.cookie = 'page_visit_count=0; Path=/; Max-Age=2592000; SameSite=Lax';
+      document.cookie = 'registration_hover_count=11; Path=/; Max-Age=2592000; SameSite=Lax';
+    });
+    await page.goto(`${CLIENT_URL}gene/ROS1/somatic`);
+    await page.setViewport(VIEW_PORT_1080);
+    await page.waitFor(LONG_WAITING_TIME);
+    let image = await page.screenshot(getScreenshotConfig('Gene Page without Login - Registration Hover'));
+    expect(image).toMatchImageSnapshot({ customSnapshotIdentifier: 'Gene Page without Login - Registration Hover' });
   })
 
   it('Alteration Page', async() => {
@@ -602,6 +650,10 @@ describe('Tests on mobile view (< large grid)', () => {
       localStorage.setItem('localdev', 'true');
       localStorage.setItem('disablebanner', 'true');
     });
+  })
+
+  afterEach(async () => {
+    await resetRegistrationCookies(page);
   })
 
   it('Alteration Page with Cancer Type - With login - Mobile', async() => {
