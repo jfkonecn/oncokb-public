@@ -40,6 +40,24 @@ b {
   min-height: 100%;
   position: relative;
   background-color: #fff;
+
+  /* Might need both because dvh isn't completely supported */
+  min-height: 100vh;
+  /* Better for mobile */
+  min-height: 100dvh;
+
+  display: grid;
+  grid-template-rows:
+    /* Toastify Div */
+    auto
+    /* Header: auto makes the header as small as it can be */
+    auto
+    // Body
+    /* Takes up the reset of the space */
+    /* will expand beyond height 100% since we only set a min height */
+    1fr
+    /* Footer: auto makes the header as small as it can be */
+    auto;
 }
 @import '~bootstrap/scss/bootstrap';
 @import 'font';

@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { remoteData } from 'cbioportal-frontend-commons';
 import classnames from 'classnames';
 import oncokbPrivateClient from '../shared/api/oncokbPrivateClientInstance';
+import mskIcon from 'content/images/msk-logo-black.svg';
 import {
   Gene,
   LevelNumber,
@@ -22,6 +23,7 @@ import {
   PAGE_DESCRIPTION,
   PAGE_ROUTE,
   PAGE_TITLE,
+  ONCOKB_TM,
 } from 'app/config/constants';
 import { LevelButton } from 'app/components/levelButton/LevelButton';
 import { getPageTitle, levelOfEvidence2Level } from 'app/shared/utils/Utils';
@@ -36,7 +38,13 @@ import { COLOR_DARK_BLUE } from 'app/config/theme';
 import WindowStore from 'app/store/WindowStore';
 import { uniq } from 'app/shared/utils/LodashUtils';
 import { Helmet } from 'react-helmet-async';
-import { getAlterationPageLink } from 'app/shared/utils/UrlUtils';
+import styles from './HomePage.module.scss';
+import PageContainer from 'app/components/PageContainer';
+import { Link } from 'react-router-dom';
+import classNames from 'classnames';
+import MskccLogo from 'app/components/MskccLogo';
+import OptimizedImage from 'app/shared/image/OptimizedImage';
+import { ContactLink } from 'app/shared/links/ContactLink';
 
 interface IHomeProps {
   content: string;
@@ -191,165 +199,218 @@ class HomePage extends React.Component<IHomeProps, {}> {
       }
     }
     return (
-      <div className="home">
-        <Helmet>
-          <title>{getPageTitle(PAGE_TITLE.HOME, false)}</title>
-          <meta name="description" content={PAGE_DESCRIPTION.HOME} />
-        </Helmet>
-        <Row className="mb-5">
-          <Col
-            md={8}
-            className={'mx-auto d-flex flex-column align-items-center '}
-          >
-            <div
-              className="text-center font-bold"
-              style={{ fontSize: '3.5em', color: COLOR_DARK_BLUE }}
-            >
-              Welcome to OncoKB
-              <sup
-                style={{
-                  fontSize: '0.5rem',
-                  verticalAlign: 'text-top',
-                  top: '0.7rem',
-                }}
+      <div>
+        <PageContainer windowStore={this.props.windowStore}>
+          <div className="home">
+            <Helmet>
+              <title>{getPageTitle(PAGE_TITLE.HOME, false)}</title>
+              <meta name="description" content={PAGE_DESCRIPTION.HOME} />
+            </Helmet>
+            <Row className="mb-5">
+              <Col
+                md={8}
+                className={'mx-auto d-flex flex-column align-items-center '}
               >
-                TM
-              </sup>
-            </div>
-            <div className="text-center" style={{ fontSize: '2em' }}>
-              MSK's Precision Oncology Knowledge Base
-            </div>
-            <div className="text-center" style={{ fontSize: '1.4em' }}>
-              An FDA-Recognized Human Genetic Variant Database<span>&#42;</span>
-            </div>
-          </Col>
-        </Row>
-        <Row className="mb-5">
-          <Col md={9} className={'mx-auto'}>
-            <Row>
-              <Col xs={12} md={6} lg={3}>
-                <HomePageNumber
-                  isLoading={this.props.appStore.mainNumbers.isPending}
-                  href={'/cancerGenes'}
-                  number={this.props.appStore.mainNumbers.result.gene}
-                  title={`${pluralize(
-                    'Gene',
-                    this.props.appStore.mainNumbers.result.gene
-                  )}`}
-                />
-              </Col>
-              <Col xs={12} md={6} lg={3}>
-                <HomePageNumber
-                  isLoading={this.props.appStore.mainNumbers.isPending}
-                  href={PAGE_ROUTE.ACTIONABLE_GENE}
-                  number={this.props.appStore.mainNumbers.result.alteration}
-                  title={`${pluralize(
-                    'Alteration',
-                    this.props.appStore.mainNumbers.result.alteration
-                  )}`}
-                />
-              </Col>
-              <Col xs={12} md={6} lg={3}>
-                <HomePageNumber
-                  isLoading={this.props.appStore.mainNumbers.isPending}
-                  href={PAGE_ROUTE.ACTIONABLE_GENE}
-                  number={this.props.appStore.mainNumbers.result.tumorType}
-                  title={`${pluralize(
-                    'Cancer Type',
-                    this.props.appStore.mainNumbers.result.tumorType
-                  )}`}
-                />
-              </Col>
-              <Col xs={12} md={6} lg={3}>
-                <HomePageNumber
-                  isLoading={this.props.appStore.mainNumbers.isPending}
-                  href={PAGE_ROUTE.ACTIONABLE_GENE}
-                  number={this.props.appStore.mainNumbers.result.drug}
-                  title={`${pluralize(
-                    'Drug',
-                    this.props.appStore.mainNumbers.result.drug
-                  )}`}
-                />
+                <div
+                  className="text-center font-bold"
+                  style={{ fontSize: '3.5em', color: COLOR_DARK_BLUE }}
+                >
+                  Welcome to OncoKB
+                  <sup
+                    style={{
+                      fontSize: '0.5rem',
+                      verticalAlign: 'text-top',
+                      top: '0.7rem',
+                    }}
+                  >
+                    TM
+                  </sup>
+                </div>
+                <div className="text-center" style={{ fontSize: '2em' }}>
+                  MSK's Precision Oncology Knowledge Base
+                </div>
+                <div className="text-center" style={{ fontSize: '1.4em' }}>
+                  An FDA-Recognized Human Genetic Variant Database
+                  <span>&#42;</span>
+                </div>
               </Col>
             </Row>
-          </Col>
-        </Row>
-        <Row className="mb-5">
-          <Col md={9} className={'mx-auto'}>
-            <OncoKBSearch />
-          </Col>
-        </Row>
-        <Row className="mb-3">
-          <Col xs={0} lg={1}></Col>
-          <Col xs={12} lg={10}>
-            <div
-              className={classnames(
-                'd-flex justify-content-around',
-                this.props.windowStore.isMDScreen ? undefined : 'flex-column'
+            <Row className="mb-5">
+              <Col md={9} className={'mx-auto'}>
+                <Row>
+                  <Col xs={12} md={6} lg={3}>
+                    <HomePageNumber
+                      isLoading={this.props.appStore.mainNumbers.isPending}
+                      href={'/cancerGenes'}
+                      number={this.props.appStore.mainNumbers.result.gene}
+                      title={`${pluralize(
+                        'Gene',
+                        this.props.appStore.mainNumbers.result.gene
+                      )}`}
+                    />
+                  </Col>
+                  <Col xs={12} md={6} lg={3}>
+                    <HomePageNumber
+                      isLoading={this.props.appStore.mainNumbers.isPending}
+                      href={PAGE_ROUTE.ACTIONABLE_GENE}
+                      number={this.props.appStore.mainNumbers.result.alteration}
+                      title={`${pluralize(
+                        'Alteration',
+                        this.props.appStore.mainNumbers.result.alteration
+                      )}`}
+                    />
+                  </Col>
+                  <Col xs={12} md={6} lg={3}>
+                    <HomePageNumber
+                      isLoading={this.props.appStore.mainNumbers.isPending}
+                      href={PAGE_ROUTE.ACTIONABLE_GENE}
+                      number={this.props.appStore.mainNumbers.result.tumorType}
+                      title={`${pluralize(
+                        'Cancer Type',
+                        this.props.appStore.mainNumbers.result.tumorType
+                      )}`}
+                    />
+                  </Col>
+                  <Col xs={12} md={6} lg={3}>
+                    <HomePageNumber
+                      isLoading={this.props.appStore.mainNumbers.isPending}
+                      href={PAGE_ROUTE.ACTIONABLE_GENE}
+                      number={this.props.appStore.mainNumbers.result.drug}
+                      title={`${pluralize(
+                        'Drug',
+                        this.props.appStore.mainNumbers.result.drug
+                      )}`}
+                    />
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+            <Row className="mb-5">
+              <Col md={9} className={'mx-auto'}>
+                <OncoKBSearch />
+              </Col>
+            </Row>
+            <Row className="mb-3">
+              <Col xs={0} lg={1}></Col>
+              <Col xs={12} lg={10}>
+                <div
+                  className={classnames(
+                    'd-flex justify-content-around',
+                    this.props.windowStore.isMDScreen
+                      ? undefined
+                      : 'flex-column'
+                  )}
+                  style={{ width: '100%' }}
+                >
+                  {levelTypeButtons}
+                </div>
+              </Col>
+              <Col xs={0} lg={1}></Col>
+            </Row>
+            <Row className="mb-5 d-flex d-flex justify-content-around">
+              {this.levelGadgets.map(
+                levelGadget =>
+                  ((this.levelTypeSelected === LEVEL_TYPES.DX &&
+                    LEVEL_CLASSIFICATION[levelGadget.level] ===
+                      LEVEL_TYPES.DX) ||
+                    (this.levelTypeSelected === LEVEL_TYPES.PX &&
+                      LEVEL_CLASSIFICATION[levelGadget.level] ===
+                        LEVEL_TYPES.PX) ||
+                    (this.levelTypeSelected === LEVEL_TYPES.TX &&
+                      LEVEL_CLASSIFICATION[levelGadget.level] ===
+                        LEVEL_TYPES.TX) ||
+                    (this.levelTypeSelected === LEVEL_TYPES.FDA &&
+                      LEVEL_CLASSIFICATION[levelGadget.level] ===
+                        LEVEL_TYPES.FDA)) && (
+                    <LevelButton
+                      key={`${levelGadget.level}-button`}
+                      level={levelGadget.level}
+                      disabledTooltip={
+                        levelGadget.level === LEVELS.Fda1
+                          ? FDA_L1_DISABLED_BTN_TOOLTIP
+                          : ''
+                      }
+                      numOfGenes={this.getLevelNumber(
+                        levelGadget.combinedLevels
+                      )}
+                      description={levelGadget.description}
+                      title={
+                        LEVEL_CLASSIFICATION[levelGadget.level] ===
+                        LEVEL_TYPES.FDA
+                          ? `FDA Level ${levelGadget.level
+                              .toString()
+                              .replace('Fda', '')}`
+                          : levelGadget.title
+                      }
+                      className="mb-2"
+                      style={{
+                        lineHeight:
+                          levelGadget.level === LEVELS.Px3 ? '35px' : undefined,
+                      }}
+                      href={`${PAGE_ROUTE.ACTIONABLE_GENE}#levels=${
+                        levelGadget.linkoutLevel
+                      }&sections=${LEVEL_CLASSIFICATION[levelGadget.level]}`}
+                      isLoading={this.levelNumbers.isPending}
+                    />
+                  )
               )}
-              style={{ width: '100%' }}
+            </Row>
+            <Row className="mb-3">
+              <Col className={'text-center'}>
+                <div className={'font-bold'}>
+                  Powered by the clinical expertise of Memorial Sloan Kettering
+                  Cancer Center
+                </div>
+                <div>
+                  <CitationText boldLinkout={true} />
+                </div>
+                <div>
+                  <FdaRecognitionDisclaimer enableLink />
+                </div>
+              </Col>
+            </Row>
+          </div>
+        </PageContainer>
+        <section className={styles.missionSection}>
+          <h3>Our Mission</h3>
+          <p>
+            The mission of {ONCOKB_TM} is to{' '}
+            <em>enable universal access to precision oncology knowledge</em>{' '}
+            across all cancer care and research settings by reliably providing{' '}
+            <em>expert-driven interpretation of cancer biomarkers.</em>
+          </p>
+        </section>
+        <section className={styles.registerNowSection}>
+          <div>
+            <h3>Create an account to get unlimited access</h3>
+            <p>
+              {ONCOKB_TM} is freely accessible for research use in an academic
+              setting.
+            </p>
+          </div>
+          <div>
+            <Link
+              id="hover-register-link"
+              className={classNames(styles.registerLink, 'btn', 'btn-primary')}
+              to={PAGE_ROUTE.REGISTER}
             >
-              {levelTypeButtons}
-            </div>
-          </Col>
-          <Col xs={0} lg={1}></Col>
-        </Row>
-        <Row className="mb-5 d-flex d-flex justify-content-around">
-          {this.levelGadgets.map(
-            levelGadget =>
-              ((this.levelTypeSelected === LEVEL_TYPES.DX &&
-                LEVEL_CLASSIFICATION[levelGadget.level] === LEVEL_TYPES.DX) ||
-                (this.levelTypeSelected === LEVEL_TYPES.PX &&
-                  LEVEL_CLASSIFICATION[levelGadget.level] === LEVEL_TYPES.PX) ||
-                (this.levelTypeSelected === LEVEL_TYPES.TX &&
-                  LEVEL_CLASSIFICATION[levelGadget.level] === LEVEL_TYPES.TX) ||
-                (this.levelTypeSelected === LEVEL_TYPES.FDA &&
-                  LEVEL_CLASSIFICATION[levelGadget.level] ===
-                    LEVEL_TYPES.FDA)) && (
-                <LevelButton
-                  key={`${levelGadget.level}-button`}
-                  level={levelGadget.level}
-                  disabledTooltip={
-                    levelGadget.level === LEVELS.Fda1
-                      ? FDA_L1_DISABLED_BTN_TOOLTIP
-                      : ''
-                  }
-                  numOfGenes={this.getLevelNumber(levelGadget.combinedLevels)}
-                  description={levelGadget.description}
-                  title={
-                    LEVEL_CLASSIFICATION[levelGadget.level] === LEVEL_TYPES.FDA
-                      ? `FDA Level ${levelGadget.level
-                          .toString()
-                          .replace('Fda', '')}`
-                      : levelGadget.title
-                  }
-                  className="mb-2"
-                  style={{
-                    lineHeight:
-                      levelGadget.level === LEVELS.Px3 ? '35px' : undefined,
-                  }}
-                  href={`${PAGE_ROUTE.ACTIONABLE_GENE}#levels=${
-                    levelGadget.linkoutLevel
-                  }&sections=${LEVEL_CLASSIFICATION[levelGadget.level]}`}
-                  isLoading={this.levelNumbers.isPending}
-                />
-              )
-          )}
-        </Row>
-        <Row className="mb-3">
-          <Col className={'text-center'}>
-            <div className={'font-bold'}>
-              Powered by the clinical expertise of Memorial Sloan Kettering
-              Cancer Center
-            </div>
-            <div>
-              <CitationText boldLinkout={true} />
-            </div>
-            <div>
-              <FdaRecognitionDisclaimer enableLink />
-            </div>
-          </Col>
-        </Row>
+              Register Now
+            </Link>
+          </div>
+        </section>
+        <section className={styles.trustedBySection}>
+          <h3>Trusted by</h3>
+          <div className={styles.trustedByLogos}>
+            <OptimizedImage alt="mskcc-logo" src={mskIcon} />
+            <OptimizedImage alt="mskcc-logo" src={mskIcon} />
+            <OptimizedImage alt="mskcc-logo" src={mskIcon} />
+          </div>
+          <div className={styles.trustedByContact}>
+            <ContactLink emailSubject="Inquiring about Clinical/Commercial Use of OncoKB">
+              Inquire about Clinical or Commercial Use
+            </ContactLink>
+          </div>
+        </section>
       </div>
     );
   }

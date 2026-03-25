@@ -1,0 +1,107 @@
+// import boldable text from font
+@import '~@mskcc/core/utils/font-utilities';
+
+$section-padding: 4rem 2rem;
+
+.missionSection {
+  // Use the boldable text from the font utilities mixin
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $section-padding;
+  background-color: #f0f5ff;
+  margin: 0 auto;
+  h3 {
+    color: #697077;
+    font-size: 1rem;
+  }
+  p {
+    max-width: 80ch;
+    em {
+      @include font-gotham('bold');
+      font-style: normal;
+    }
+  }
+}
+
+.registerNowSection {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  align-items: center;
+  justify-items: stretch;
+  max-width: 90ch;
+  margin: 0 auto;
+  padding: $section-padding;
+  div:first-child {
+    max-width: 670px;
+    width: 100%;
+    h3 {
+      font-size: 2rem;
+      max-width: 15ch;
+    }
+    p {
+      margin-top: 1rem;
+      max-width: 80ch;
+    }
+  }
+  div:last-child {
+    margin: 0 auto;
+    width: 100%;
+    a {
+      max-width: 250px;
+      width: 100%;
+      padding: 0.75rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .registerNowSection {
+    grid-template-columns: 1fr;
+    div:first-child {
+      padding: 0;
+    }
+    div:last-child {
+      margin-top: 2rem;
+      display: flex;
+      justify-items: center;
+      a {
+        margin: 0 auto;
+      }
+    }
+  }
+}
+
+.trustedBySection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $section-padding;
+  background-color: #f0f5ff;
+  h3 {
+    color: #697077;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  .trustedByLogos {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    img {
+      max-height: 50px;
+      width: auto;
+    }
+  }
+  .trustedByContact {
+    margin-top: 4rem;
+    a {
+      background: white;
+      color: black;
+      padding: 0.5rem 1rem;
+      border-width: 1px;
+      border-color: black;
+      border-style: solid;
+    }
+  }
+}

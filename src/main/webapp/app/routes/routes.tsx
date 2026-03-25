@@ -85,9 +85,9 @@ const AppRoutes = (props: {
         exact
         path={PAGE_ROUTE.HOME}
         windowStore={props.windowStore}
-        component={HomePage}
-        pageContainer={PageContainer}
         authenticationStore={props.authenticationStore}
+        component={HomePage}
+        pageContainer={({ children }) => children}
       />
       <Redirect
         exact
