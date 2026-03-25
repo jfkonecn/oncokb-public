@@ -5,6 +5,7 @@ import { remoteData } from 'cbioportal-frontend-commons';
 import classnames from 'classnames';
 import oncokbPrivateClient from '../shared/api/oncokbPrivateClientInstance';
 import mskIcon from 'content/images/msk-logo-black.svg';
+import stockPhoto from 'content/images/stock-photo.jpg';
 import {
   Gene,
   LevelNumber,
@@ -372,6 +373,11 @@ class HomePage extends React.Component<IHomeProps, {}> {
           </div>
         </PageContainer>
         <section className={styles.missionSection}>
+          <img
+            className={styles.heroImage}
+            src={stockPhoto}
+            alt="Scientist using a microscope in a laboratory"
+          />
           <h3>Our Mission</h3>
           <p>
             The mission of {ONCOKB_TM} is to{' '}
