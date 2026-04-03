@@ -1,289 +1,182 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import {
-  action,
-  computed,
-  IReactionDisposer,
-  observable,
-  reaction,
-} from 'mobx';
+import { computed } from 'mobx';
 import autobind from 'autobind-decorator';
-import { Redirect } from 'react-router-dom';
-import client from 'app/shared/api/clientInstance';
-import {
-  GracePeriodBlacklistVM,
-  ManagedUserVM,
-} from 'app/shared/api/generated/API';
-import {
-  LicenseType,
-  ONCOKB_TM,
-  PAGE_ROUTE,
-  QUERY_SEPARATOR_FOR_QUERY_STRING,
-} from 'app/config/constants';
-import { Alert } from 'react-bootstrap';
+import { Col, Row, Container } from 'react-bootstrap';
 import { RouterStore } from 'mobx-react-router';
-import * as QueryString from 'query-string';
+import { Link } from 'react-router-dom';
+import { PAGE_ROUTE } from 'app/config/constants';
 import WindowStore from 'app/store/WindowStore';
 import SmallPageContainer from 'app/components/SmallPageContainer';
-import { ErrorAlert } from 'app/shared/alert/ErrorAlert';
+import { RegisterWorkflow } from 'app/components/registerWorkflow/RegisterWorkflow';
+import { RegisterWorkflowFormPlaceholder } from 'app/components/registerWorkflow/RegisterWorkflowFormPlaceholder';
 import {
-  FormSection,
-  NewAccountForm,
-} from 'app/components/newAccountForm/NewAccountForm';
-import { getErrorMessage, OncoKBError } from 'app/shared/alert/ErrorAlertUtils';
-import { LicenseInquireLink } from 'app/shared/links/LicenseInquireLink';
-import ReCAPTCHA from 'app/shared/recaptcha/recaptcha';
-import { setRecaptchaToken } from 'app/indexUtils';
+  WORKFLOW_OUTCOMES,
+  WORKFLOW_STEPS,
+  WorkflowNodeId,
+  WorkflowOutcomeId,
+  WorkflowStepId,
+} from 'app/components/registerWorkflow/registerWorkflowData';
+import { OutcomeActions } from 'app/components/registerWorkflow/OutcomeActions';
 
-export type NewUserRequiredFields = {
-  username: string;
-  password: string;
-  email: string;
-  jobTitle?: string;
-};
-
-enum RegisterStatus {
-  REGISTERED,
-  NOT_SUCCESS,
-  NA,
-  READY_REDIRECT,
-}
+const WORKFLOW_QUERY_PARAM = 'workflow';
 
 export type IRegisterProps = {
-  routing: RouterStore;
+  routing?: RouterStore;
   windowStore: WindowStore;
 };
-
-export const LICENSE_HASH_KEY = 'license';
-export const SHOW_HASH_KEY = 'show';
 
 @inject('routing', 'windowStore')
 @observer
 export class RegisterPage extends React.Component<IRegisterProps> {
-  @observable registerStatus: RegisterStatus = RegisterStatus.NA;
-  @observable registerError: OncoKBError;
-  @observable selectedLicense: LicenseType | undefined;
-  @observable visibleSections: FormSection[] | undefined;
-  @observable registeredEmail: string | undefined;
-  @observable blacklistedDomains: string[] = [];
-
-  readonly reactions: IReactionDisposer[] = [];
-
-  recaptcha = new ReCAPTCHA();
-
-  constructor(props: Readonly<IRegisterProps>) {
-    super(props);
-    this.reactions.push(
-      reaction(
-        () => [props.routing.location.hash],
-        ([hash]) => {
-          const queryStrings = QueryString.parse(hash, {
-            arrayFormat: QUERY_SEPARATOR_FOR_QUERY_STRING,
-          });
-          if (queryStrings[LICENSE_HASH_KEY]) {
-            let urlLicense = queryStrings[LICENSE_HASH_KEY];
-            if (typeof urlLicense === 'string') {
-              urlLicense = urlLicense.toUpperCase();
-              this.selectedLicense = urlLicense as LicenseType;
-            }
-          }
-          if (queryStrings[LICENSE_HASH_KEY]) {
-            const showStr = queryStrings[SHOW_HASH_KEY];
-            switch (typeof showStr) {
-              case 'string':
-                if (showStr) {
-                  this.visibleSections = [
-                    showStr.toUpperCase(),
-                  ] as FormSection[];
-                }
-                break;
-              case 'object':
-                if (Array.isArray(showStr)) {
-                  this.visibleSections = showStr.map(str =>
-                    str.toUpperCase()
-                  ) as FormSection[];
-                }
-                break;
-              default:
-                break;
-            }
-          }
-        },
-        { fireImmediately: true }
-      ),
-      reaction(
-        () => this.selectedLicense,
-        newSelection => {
-          const parsedHashQueryString = QueryString.stringify(
-            {
-              [LICENSE_HASH_KEY]: newSelection,
-            },
-            { arrayFormat: QUERY_SEPARATOR_FOR_QUERY_STRING }
-          );
-          window.location.hash = parsedHashQueryString;
-        }
-      )
-    );
-  }
-
-  componentWillUnmount(): void {
-    this.reactions.forEach(componentReaction => componentReaction());
-  }
-
-  componentDidMount(): void {
-    this.fetchGracePeriodBlacklist();
-  }
-
-  @autobind
-  @action
-  async fetchGracePeriodBlacklist() {
-    try {
-      const response: GracePeriodBlacklistVM = await client.getGracePeriodBlacklistUsingGET(
-        {}
-      );
-      this.blacklistedDomains = (response.domains || []).map(domain =>
-        domain.toLowerCase()
-      );
-    } catch (error) {
-      this.blacklistedDomains = [];
-    }
-  }
-
-  @autobind
-  @action
-  async handleValidSubmit(newAccount: Partial<ManagedUserVM>) {
-    this.registeredEmail = newAccount.email?.toLowerCase();
-    const token: string = await this.recaptcha.getToken();
-    setRecaptchaToken(token);
-    client
-      .registerAccountUsingPOST({
-        managedUserVm: newAccount as ManagedUserVM,
-      })
-      .then(this.successToRegistered, this.failedToRegistered);
-  }
-
-  @action.bound
-  redirectToAccountPage() {
-    this.registerStatus = RegisterStatus.READY_REDIRECT;
-  }
-
-  @action.bound
-  successToRegistered() {
-    this.registerStatus = RegisterStatus.REGISTERED;
-    // setTimeout(this.redirectToAccountPage, REDIRECT_TIMEOUT_MILLISECONDS);
-  }
-
-  @action.bound
-  failedToRegistered(error: OncoKBError) {
-    this.registerStatus = RegisterStatus.NOT_SUCCESS;
-    this.registerError = error;
-    window.scrollTo(0, 0);
-  }
-
-  getErrorMessage(additionalInfo = '') {
-    return (
-      (additionalInfo ? `${additionalInfo}, w` : 'W') +
-      'e were not able to create an account for you.'
-    );
+  @computed
+  get backUrl() {
+    const previousNode = this.getPreviousNode(this.currentNode);
+    return previousNode ? this.getNodeUrl(previousNode) : undefined;
   }
 
   @computed
-  get errorRegisterMessage() {
-    return this.getErrorMessage(getErrorMessage(this.registerError));
+  get restartUrl() {
+    return this.getNodeUrl(undefined);
   }
 
-  @autobind
-  @action
-  onSelectLicense(license: LicenseType | undefined) {
-    this.selectedLicense = license;
+  @computed
+  get currentStep() {
+    return this.isStep(this.currentNode)
+      ? WORKFLOW_STEPS[this.currentNode]
+      : undefined;
   }
 
-  isNoGracePeriodEmail(email?: string) {
-    if (!email) {
+  @computed
+  get currentOutcome() {
+    return this.isOutcome(this.currentNode)
+      ? WORKFLOW_OUTCOMES[this.currentNode]
+      : undefined;
+  }
+
+  @computed
+  get canGoBack() {
+    return this.currentNode !== 'step-1';
+  }
+
+  @computed
+  get canStartOver() {
+    return this.currentNode !== 'step-1';
+  }
+
+  @computed
+  get currentNode(): WorkflowNodeId {
+    const searchParams = new URLSearchParams(this.locationSearch);
+    const queryNode = searchParams.get(WORKFLOW_QUERY_PARAM);
+    return this.isWorkflowNode(queryNode) ? queryNode : 'step-1';
+  }
+
+  @computed
+  get locationSearch() {
+    return this.props.routing?.location.search ?? window.location.search;
+  }
+
+  @computed
+  get progressLabel() {
+    return this.currentStep
+      ? `Step ${this.currentStep.stepNumber} of 3`
+      : 'Complete';
+  }
+
+  @computed
+  get progressNow() {
+    return this.currentStep
+      ? Math.round((this.currentStep.stepNumber / 3) * 100)
+      : 100;
+  }
+
+  isStep(node: WorkflowNodeId): node is WorkflowStepId {
+    return node in WORKFLOW_STEPS;
+  }
+
+  isOutcome(node: WorkflowNodeId): node is WorkflowOutcomeId {
+    return node in WORKFLOW_OUTCOMES;
+  }
+
+  isWorkflowNode(node: string | null): node is WorkflowNodeId {
+    if (!node) {
       return false;
     }
-    const normalizedEmail = email.toLowerCase();
-    const atIndex = normalizedEmail.lastIndexOf('@');
-    if (atIndex < 0 || atIndex === normalizedEmail.length - 1) {
-      return false;
-    }
-    const domain = normalizedEmail.substring(atIndex + 1);
-    return this.blacklistedDomains.includes(domain);
-  }
-
-  getRegisteredMessage(licenseType: LicenseType | undefined) {
-    if (licenseType === undefined) {
-      return '';
-    }
-    const companyName =
-      licenseType === LicenseType.HOSPITAL ? 'hospital' : 'company';
-    const noGracePeriod = this.isNoGracePeriodEmail(this.registeredEmail);
     return (
-      <>
-        <p>
-          Thank you for creating an {ONCOKB_TM} account. We have sent you an
-          email to verify your email address. Please follow the instructions in
-          the email to complete registration.
-        </p>
-        <p>
-          After validating your email address, please allow 1-2 business days
-          for us to review your request.{' '}
-          {noGracePeriod ? (
-            <span>
-              You will not have a grace period since you are using a personal
-              email address.
-            </span>
-          ) : (
-            <span>
-              You will have a temporary grace period while your license request
-              is under review.
-            </span>
-          )}{' '}
-          {licenseType === LicenseType.ACADEMIC ? (
-            ''
-          ) : (
-            <span>
-              If your {companyName} already has a license, we will grant you
-              access soon. If your {companyName} does not yet have a license, we
-              will contact you with terms. Please reach out to{' '}
-              <LicenseInquireLink /> with any questions.
-            </span>
-          )}
-        </p>
-      </>
+      this.isStep(node as WorkflowNodeId) ||
+      this.isOutcome(node as WorkflowNodeId)
     );
   }
 
+  getPreviousNode(node: WorkflowNodeId): WorkflowNodeId | undefined {
+    if (node === 'step-1') {
+      return undefined;
+    }
+    for (const step of Object.values(WORKFLOW_STEPS)) {
+      if (step.choices.some(choice => choice.next === node)) {
+        return step.id;
+      }
+    }
+    return undefined;
+  }
+
+  getWorkflowLocation(nextNode?: WorkflowNodeId) {
+    const pathname =
+      this.props.routing?.location.pathname ?? window.location.pathname;
+    const hash = this.props.routing?.location.hash ?? window.location.hash;
+    const searchParams = new URLSearchParams(this.locationSearch);
+    if (nextNode && nextNode !== 'step-1') {
+      searchParams.set(WORKFLOW_QUERY_PARAM, nextNode);
+    } else {
+      searchParams.delete(WORKFLOW_QUERY_PARAM);
+    }
+    const search = searchParams.toString();
+    return {
+      pathname,
+      search: search ? `?${search}` : '',
+      hash,
+    };
+  }
+
+  @autobind
+  getNodeUrl(nextNode?: WorkflowNodeId) {
+    const location = this.getWorkflowLocation(nextNode);
+    return `${location.pathname}${location.search}${location.hash}`;
+  }
+
   render() {
-    if (this.registerStatus === RegisterStatus.READY_REDIRECT) {
-      return <Redirect to={PAGE_ROUTE.HOME} />;
-    }
-
-    if (this.registerStatus === RegisterStatus.REGISTERED) {
-      return (
-        <SmallPageContainer>
-          <div>
-            <Alert variant="info">
-              {this.getRegisteredMessage(this.selectedLicense)}
-            </Alert>
-          </div>
-        </SmallPageContainer>
-      );
-    }
-
-    return (
-      <div>
-        {this.registerError ? <ErrorAlert error={this.registerError} /> : null}
-        <NewAccountForm
-          isLargeScreen={this.props.windowStore.isLargeScreen}
-          defaultLicense={this.selectedLicense}
-          onSubmit={this.handleValidSubmit}
-          visibleSections={this.visibleSections}
-          gracePeriodBlacklistedDomains={this.blacklistedDomains}
-          byAdmin={false}
-          onSelectLicense={this.onSelectLicense}
+    return !this.currentOutcome ? (
+      <SmallPageContainer>
+        <Row className="mb-3"></Row>
+        <Row>
+          <Col>
+            <RegisterWorkflow
+              backUrl={this.backUrl}
+              canGoBack={this.canGoBack}
+              canStartOver={this.canStartOver}
+              currentStep={this.currentStep}
+              getNodeUrl={this.getNodeUrl}
+              restartUrl={this.restartUrl}
+              progressLabel={this.progressLabel}
+              progressNow={this.progressNow}
+            />
+          </Col>
+        </Row>
+      </SmallPageContainer>
+    ) : (
+      <Container>
+        <OutcomeActions
+          backUrl={this.backUrl}
+          restartUrl={this.restartUrl}
+          canGoBack={this.canGoBack}
+          canStartOver={this.canStartOver}
         />
-      </div>
+        <Row>
+          <Col>
+            <RegisterWorkflowFormPlaceholder outcome={this.currentOutcome} />
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }

@@ -27,7 +27,7 @@ export enum TabKey {
 
 const TAB_TITLES: { [key in TabKey]: string } = {
   [TabKey.TERMS]: PAGE_TITLE.TERMS,
-  [TabKey.REGISTER]: 'Apply for a license',
+  [TabKey.REGISTER]: 'Register for an Account',
   [TabKey.API_ACCESS]: 'API Access',
 };
 
