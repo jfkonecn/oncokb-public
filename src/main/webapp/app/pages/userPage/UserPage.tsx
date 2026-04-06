@@ -27,7 +27,7 @@ import {
 import {
   ACCOUNT_TYPE_DEFAULT,
   AccountType,
-} from 'app/components/newAccountForm/NewAccountForm';
+} from 'app/components/registerWorkflow/forms/AccountRegistrationForm';
 import { Alert, Button, Col, Row } from 'react-bootstrap';
 import WindowStore from 'app/store/WindowStore';
 import {

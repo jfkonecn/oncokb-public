@@ -8,7 +8,7 @@ import { LicenseType } from 'app/config/constants';
 import { Alert } from 'react-bootstrap';
 import WindowStore from 'app/store/WindowStore';
 import { ErrorAlert } from 'app/shared/alert/ErrorAlert';
-import { NewAccountForm } from 'app/components/newAccountForm/NewAccountForm';
+import { AccountRegistrationForm } from 'app/components/registerWorkflow/forms/AccountRegistrationForm';
 import { OncoKBError } from 'app/shared/alert/ErrorAlertUtils';
 enum RegisterStatus {
   REGISTERED,
@@ -61,7 +61,7 @@ export class CreateAccountPage extends React.Component<{
           <Alert variant={'info'}>Registered</Alert>
         ) : null}
         {this.registerError ? <ErrorAlert error={this.registerError} /> : null}
-        <NewAccountForm
+        <AccountRegistrationForm
           isLargeScreen={this.props.windowStore.isLargeScreen}
           defaultLicense={this.selectedLicense}
           onSubmit={this.handleValidSubmit}
