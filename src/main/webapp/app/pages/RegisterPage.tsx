@@ -4,12 +4,10 @@ import { computed } from 'mobx';
 import autobind from 'autobind-decorator';
 import { Col, Row, Container } from 'react-bootstrap';
 import { RouterStore } from 'mobx-react-router';
-import { Link } from 'react-router-dom';
-import { PAGE_ROUTE } from 'app/config/constants';
 import WindowStore from 'app/store/WindowStore';
 import SmallPageContainer from 'app/components/SmallPageContainer';
 import { RegisterWorkflow } from 'app/components/registerWorkflow/RegisterWorkflow';
-import { RegisterWorkflowFormPlaceholder } from 'app/components/registerWorkflow/RegisterWorkflowFormPlaceholder';
+import { RegisterWorkflowOutcomeForm } from 'app/components/registerWorkflow/RegisterWorkflowOutcomeForm';
 import {
   WORKFLOW_OUTCOMES,
   WORKFLOW_STEPS,
@@ -173,7 +171,10 @@ export class RegisterPage extends React.Component<IRegisterProps> {
         />
         <Row>
           <Col>
-            <RegisterWorkflowFormPlaceholder outcome={this.currentOutcome} />
+            <RegisterWorkflowOutcomeForm
+              isLargeScreen={this.props.windowStore.isLargeScreen}
+              outcome={this.currentOutcome}
+            />
           </Col>
         </Row>
       </Container>
