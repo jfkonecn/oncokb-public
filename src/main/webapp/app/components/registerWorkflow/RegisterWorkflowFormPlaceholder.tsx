@@ -46,8 +46,7 @@ export const RegisterWorkflowFormPlaceholder: React.FC<RegisterWorkflowFormPlace
     : undefined;
 
   return (
-    <div className="border rounded bg-white p-4 shadow-sm h-100">
-      <div className="text-uppercase text-muted small mb-2">Registration</div>
+    <>
       {outcome ? (
         <>
           <h2 className="h4 mb-3">{outcome.title}</h2>
@@ -70,13 +69,10 @@ export const RegisterWorkflowFormPlaceholder: React.FC<RegisterWorkflowFormPlace
               </button>
             </div>
           ) : null}
-          <div className="border rounded bg-light p-3">
-            <div className="font-weight-bold mb-2">Placeholder form area</div>
-            <div className="text-muted small">
-              Final phase-specific fields and submission behavior will be added
-              in a later phase.
-            </div>
-          </div>
+          <p>
+            Final phase-specific fields and submission behavior will be added in
+            a later phase.
+          </p>
         </>
       ) : (
         <div className="text-muted">
@@ -84,6 +80,6 @@ export const RegisterWorkflowFormPlaceholder: React.FC<RegisterWorkflowFormPlace
           form area for that path will appear here.
         </div>
       )}
-    </div>
+    </>
   );
 };

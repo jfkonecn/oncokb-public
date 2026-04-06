@@ -77,8 +77,11 @@ function useShouldNudge(isUserAuthenticated: boolean): [boolean, () => void] {
   }, [location.pathname, isUserAuthenticated]);
 
   useEffect(() => {
-    setShouldNudge(!isUserAuthenticated && pageVisitCount > 10);
-  }, [pageVisitCount, isUserAuthenticated]);
+    const isOnRegistrationPage = location.pathname === PAGE_ROUTE.REGISTER;
+    setShouldNudge(
+      !isUserAuthenticated && pageVisitCount > 10 && !isOnRegistrationPage
+    );
+  }, [pageVisitCount, isUserAuthenticated, location.pathname]);
 
   const dismissNudge = useCallback(() => {
     setPageVisitCount(0);
