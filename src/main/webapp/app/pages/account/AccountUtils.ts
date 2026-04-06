@@ -1,6 +1,7 @@
 import {
   ACCOUNT_TITLES,
   License,
+  LICENSE_TITLES,
   LICENSE_TYPES,
   LicenseType,
 } from 'app/config/constants';
@@ -22,6 +23,8 @@ export function getAccountInfoTitle(
         return 'Company Email';
       case LicenseType.HOSPITAL:
         return 'Hospital Email';
+      case LicenseType.EXISTING:
+        return 'Organization Email';
       default:
         return 'Email';
     }
@@ -40,6 +43,9 @@ export function getAccountInfoTitle(
       case LicenseType.HOSPITAL:
         title = 'Hospital Name';
         break;
+      case LicenseType.EXISTING:
+        title = 'Organization Name';
+        break;
       default:
         title = 'Company Name';
         break;
@@ -55,5 +61,10 @@ export function getAccountInfoTitle(
 }
 
 export function getLicenseTitle(key: LicenseType): License | undefined {
-  return LICENSE_TYPES.find(license => license.key === key);
+  return (
+    LICENSE_TYPES.find(license => license.key === key) || {
+      key,
+      title: LICENSE_TITLES[key],
+    }
+  );
 }

@@ -744,6 +744,7 @@ export enum LicenseType {
   RESEARCH_IN_COMMERCIAL = 'RESEARCH_IN_COMMERCIAL',
   HOSPITAL = 'HOSPITAL',
   COMMERCIAL = 'COMMERCIAL',
+  EXISTING = 'EXISTING',
 }
 
 export const LICENSE_TITLES: { [key in LicenseType]: string } = {
@@ -752,6 +753,7 @@ export const LICENSE_TITLES: { [key in LicenseType]: string } = {
   [LicenseType.HOSPITAL]:
     'Use for patient services or reports in a hospital setting',
   [LicenseType.COMMERCIAL]: 'Use in a commercial product',
+  [LicenseType.EXISTING]: 'Join an existing organization license',
 };
 
 export type License = {

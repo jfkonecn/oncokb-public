@@ -154,7 +154,13 @@ export const RegisterWorkflowOutcomeForm: React.FC<RegisterWorkflowOutcomeFormPr
         />
       );
     case 'outcome-existing-license':
-      return <ExistingOrganizationLicenseForm />;
+      return (
+        <>
+          <h2 className="h4 mb-3">{outcome.title}</h2>
+          <p className="text-muted mb-4">{outcome.description}</p>
+          <ExistingOrganizationLicenseForm />
+        </>
+      );
     case 'outcome-commercial':
       return (
         <RegistrationOutcomePanel

@@ -122,7 +122,7 @@ export class NewCompanyForm extends React.Component<INewCompanyFormProps> {
       legalContact: values.legalContact,
       licenseStatus: this.selectedLicenseStatus,
       licenseModel: this.selectedLicenseModel,
-      licenseType: this.selectedLicenseType,
+      licenseType: this.selectedLicenseType as CompanyVM['licenseType'],
       name: values.companyName,
       companyDomains: this.companyDomains,
       additionalInfo:

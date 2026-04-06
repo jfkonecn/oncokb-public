@@ -438,7 +438,7 @@ export default class UserPage extends React.Component<IUserPage> {
         firstName: values.firstName,
         lastName: values.lastName,
         licenseType: this.selectedLicense
-          ? this.selectedLicense
+          ? (this.selectedLicense as UserDTO['licenseType'])
           : this.user.licenseType,
         authorities: values.authorities,
         activated: values.accountStatus === AccountStatus.ACTIVATED,

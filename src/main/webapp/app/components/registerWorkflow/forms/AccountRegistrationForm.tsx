@@ -240,7 +240,7 @@ export function AccountRegistrationForm(props: AccountRegistrationFormProps) {
       firstName: values.firstName,
       lastName: values.lastName,
       email: values.email,
-      licenseType: selectedLicense,
+      licenseType: selectedLicense as ManagedUserVM['licenseType'],
       tokenIsRenewable: selectedAccountType !== AccountType.TRIAL,
       jobTitle: values.jobTitle,
       company: selectedCompanyOption?.value,
