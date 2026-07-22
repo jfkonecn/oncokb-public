@@ -33,6 +33,10 @@
       "description": "Mails Controller"
     },
     {
+      "name": "o-auth-token-controller",
+      "description": "O Auth Token Controller"
+    },
+    {
       "name": "token-resource",
       "description": "Token Resource"
     },
@@ -227,6 +231,53 @@
         ],
         "summary": "initiateTrialAccountActivation",
         "operationId": "initiateTrialAccountActivationUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "login",
+            "description": "login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/UserDTO"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/account/active-trial/revoke": {
+      "post": {
+        "tags": [
+          "account-resource"
+        ],
+        "summary": "revokeTrialAccountActivation",
+        "operationId": "revokeTrialAccountActivationUsingPOST",
         "consumes": [
           "application/json"
         ],
@@ -776,7 +827,7 @@
           "user-uuid-controller"
         ],
         "summary": "authorize",
-        "operationId": "authorizeUsingPOST",
+        "operationId": "authorizeUsingPOST_1",
         "consumes": [
           "application/json"
         ],
@@ -4023,6 +4074,75 @@
         },
         "deprecated": false
       }
+    },
+    "/oauth2/oncokb-token": {
+      "post": {
+        "tags": [
+          "o-auth-token-controller"
+        ],
+        "summary": "authorize",
+        "operationId": "authorizeUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "authenticated",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "authorities[0].authority",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "credentials",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
+            "name": "details",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
+            "name": "principal",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
     }
   },
   "definitions": {
@@ -4809,6 +4929,12 @@
         "resetDate": {
           "type": "string",
           "format": "date-time"
+        },
+        "userMails": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserMails"
+          }
         }
       },
       "title": "User"
@@ -5065,6 +5191,71 @@
         }
       },
       "title": "UserDetailsDTO"
+    },
+    "UserMails": {
+      "type": "object",
+      "required": [
+        "sentBy",
+        "sentDate",
+        "sentFrom"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "mailType": {
+          "type": "string",
+          "enum": [
+            "ACTIVATION",
+            "CREATION",
+            "APPROVAL",
+            "API_ACCESS_APPROVAL",
+            "APPROVAL_ALIGN_LICENSE_WITH_COMPANY",
+            "REJECTION",
+            "REJECTION_US_SANCTION",
+            "REJECT_ALUMNI_ADDRESS",
+            "PASSWORD_RESET",
+            "LICENSE_REVIEW_COMMERCIAL",
+            "LICENSE_REVIEW_RESEARCH_COMMERCIAL",
+            "LICENSE_REVIEW_HOSPITAL",
+            "CLARIFY_ACADEMIC_FOR_PROFIT",
+            "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL",
+            "CLARIFY_USE_CASE",
+            "CLARIFY_DUPLICATE_USER",
+            "CLARIFY_REGISTRATION_INFO",
+            "CLARIFY_HOSPITAL_USE",
+            "HOSPITAL_APPROVAL_HIGH_VOLUME",
+            "CLARIFY_COMMERCIAL_USE",
+            "LICENSE_OPTIONS",
+            "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES",
+            "ACTIVATE_FREE_TRIAL",
+            "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE",
+            "TRIAL_ACCOUNT_IS_ACTIVATED",
+            "DATA_USAGE_EXCEEDS_THRESHOLD",
+            "TOKEN_HAS_BEEN_EXPOSED",
+            "TOKEN_HAS_BEEN_EXPOSED_USER",
+            "SEARCHING_RESPONSE_STRUCTURE_HAS_CHANGED",
+            "LIST_OF_UNAPPROVED_USERS",
+            "TERMINATION_NOTIFICATION_EMAIL",
+            "TEST"
+          ]
+        },
+        "sentBy": {
+          "type": "string"
+        },
+        "sentDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sentFrom": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      },
+      "title": "UserMails"
     },
     "UserMailsDTO": {
       "type": "object",

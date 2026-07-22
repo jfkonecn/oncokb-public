@@ -154,7 +154,8 @@ export type LoginVM = {
 export type MailTypeInfo = {
     'description': string
 
-        'mailType': "ACTIVATION" | "CREATION" | "APPROVAL" | "API_ACCESS_APPROVAL" | "APPROVAL_ALIGN_LICENSE_WITH_COMPANY" | "REJECTION" | "REJECTION_US_SANCTION" | "REJECT_ALUMNI_ADDRESS" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "CLARIFY_USE_CASE" | "CLARIFY_DUPLICATE_USER" | "CLARIFY_REGISTRATION_INFO" | "CLARIFY_HOSPITAL_USE" | "CLARIFY_COMMERCIAL_USE" | "HOSPITAL_APPROVAL_HIGH_VOLUME" | "LICENSE_OPTIONS" | "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES" | "ACTIVATE_FREE_TRIAL" | "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE" | "TRIAL_ACCOUNT_IS_ACTIVATED" | "DATA_USAGE_EXCEEDS_THRESHOLD" | "TOKEN_HAS_BEEN_EXPOSED" | "TOKEN_HAS_BEEN_EXPOSED_USER" | "SEARCHING_RESPONSE_STRUCTURE_HAS_CHANGED" | "LIST_OF_UNAPPROVED_USERS" | "TERMINATION_NOTIFICATION_EMAIL" | "TEST"
+        'mailType': "ACTIVATION" | "CREATION" | "APPROVAL" | "API_ACCESS_APPROVAL" | "APPROVAL_ALIGN_LICENSE_WITH_COMPANY" | "REJECTION" | "REJECTION_US_SANCTION" | "REJECT_ALUMNI_ADDRESS" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "CLARIFY_USE_CASE" | "CLARIFY_DUPLICATE_USER" | "CLARIFY_REGISTRATION_INFO" | "CLARIFY_HOSPITAL_USE" | "HOSPITAL_APPROVAL_HIGH_VOLUME" | "CLARIFY_COMMERCIAL_USE" | "LICENSE_OPTIONS" | "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES" | "ACTIVATE_FREE_TRIAL" | "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE" | "TRIAL_ACCOUNT_IS_ACTIVATED" | "DATA_USAGE_EXCEEDS_THRESHOLD" | "TOKEN_HAS_BEEN_EXPOSED" | "TOKEN_HAS_BEEN_EXPOSED_USER" | "SEARCHING_RESPONSE_STRUCTURE_HAS_CHANGED" | "LIST_OF_UNAPPROVED_USERS" | "TERMINATION_NOTIFICATION_EMAIL" | "TEST"
+
 };
 export type ManagedUserVM = {
     'accountRequestStatus': "UNKNOWN" | "PENDING" | "PENDING_NO_GRACE_PERIOD" | "APPROVED" | "REJECTED"
@@ -331,6 +332,8 @@ export type User = {
 
         'resetDate': string
 
+        'userMails': Array < UserMails >
+
 };
 export type UserBannerMessageDTO = {
     'bannerType': "INFO" | "ALERT"
@@ -440,11 +443,25 @@ export type UserDetailsDTO = {
         'userId': number
 
 };
+export type UserMails = {
+    'id': number
+
+        'mailType': "ACTIVATION" | "CREATION" | "APPROVAL" | "API_ACCESS_APPROVAL" | "APPROVAL_ALIGN_LICENSE_WITH_COMPANY" | "REJECTION" | "REJECTION_US_SANCTION" | "REJECT_ALUMNI_ADDRESS" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "CLARIFY_USE_CASE" | "CLARIFY_DUPLICATE_USER" | "CLARIFY_REGISTRATION_INFO" | "CLARIFY_HOSPITAL_USE" | "HOSPITAL_APPROVAL_HIGH_VOLUME" | "CLARIFY_COMMERCIAL_USE" | "LICENSE_OPTIONS" | "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES" | "ACTIVATE_FREE_TRIAL" | "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE" | "TRIAL_ACCOUNT_IS_ACTIVATED" | "DATA_USAGE_EXCEEDS_THRESHOLD" | "TOKEN_HAS_BEEN_EXPOSED" | "TOKEN_HAS_BEEN_EXPOSED_USER" | "SEARCHING_RESPONSE_STRUCTURE_HAS_CHANGED" | "LIST_OF_UNAPPROVED_USERS" | "TERMINATION_NOTIFICATION_EMAIL" | "TEST"
+
+        'sentBy': string
+
+        'sentDate': string
+
+        'sentFrom': string
+
+        'user': User
+
+};
 export type UserMailsDTO = {
     'id': number
 
-        'mailType': "ACTIVATION" | "CREATION" | "APPROVAL" | "API_ACCESS_APPROVAL" | "APPROVAL_ALIGN_LICENSE_WITH_COMPANY" | "REJECTION" | "REJECTION_US_SANCTION" | "REJECT_ALUMNI_ADDRESS" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "CLARIFY_USE_CASE" | "CLARIFY_DUPLICATE_USER" | "CLARIFY_REGISTRATION_INFO" | "CLARIFY_HOSPITAL_USE" | "CLARIFY_COMMERCIAL_USE" | "HOSPITAL_APPROVAL_HIGH_VOLUME" | "LICENSE_OPTIONS" | "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES" | "ACTIVATE_FREE_TRIAL" | "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE" | "TRIAL_ACCOUNT_IS_ACTIVATED" | "DATA_USAGE_EXCEEDS_THRESHOLD" | "TOKEN_HAS_BEEN_EXPOSED" | "TOKEN_HAS_BEEN_EXPOSED_USER" | "SEARCHING_RESPONSE_STRUCTURE_HAS_CHANGED" | "LIST_OF_UNAPPROVED_USERS" | "TERMINATION_NOTIFICATION_EMAIL" | "TEST"
-        
+        'mailType': "ACTIVATION" | "CREATION" | "APPROVAL" | "API_ACCESS_APPROVAL" | "APPROVAL_ALIGN_LICENSE_WITH_COMPANY" | "REJECTION" | "REJECTION_US_SANCTION" | "REJECT_ALUMNI_ADDRESS" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "CLARIFY_USE_CASE" | "CLARIFY_DUPLICATE_USER" | "CLARIFY_REGISTRATION_INFO" | "CLARIFY_HOSPITAL_USE" | "HOSPITAL_APPROVAL_HIGH_VOLUME" | "CLARIFY_COMMERCIAL_USE" | "LICENSE_OPTIONS" | "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES" | "ACTIVATE_FREE_TRIAL" | "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE" | "TRIAL_ACCOUNT_IS_ACTIVATED" | "DATA_USAGE_EXCEEDS_THRESHOLD" | "TOKEN_HAS_BEEN_EXPOSED" | "TOKEN_HAS_BEEN_EXPOSED_USER" | "SEARCHING_RESPONSE_STRUCTURE_HAS_CHANGED" | "LIST_OF_UNAPPROVED_USERS" | "TERMINATION_NOTIFICATION_EMAIL" | "TEST"
+
         'sentBy': string
 
         'sentDate': string
@@ -458,30 +475,6 @@ export type UserMailsDTO = {
 };
 export type UserRegistrationSummary = {
     'date': string
-
-        'licenseType': string
-
-        'total': number
-
-};
-export type UserStats = {
-    'maxUsageProportion': number
-
-        'mostUsedEndpoint': string
-
-        'mostUsedPublicEndpoint': string
-
-        'publicMaxUsageProportion': number
-
-        'totalPublicUsage': number
-
-        'totalUsage': number
-
-};
-export type UserUsage = {
-    'company': string
-
-        'jobTitle': string
 
         'licenseType': string
 
@@ -913,6 +906,82 @@ export default class API {
         $domain ? : string
     }): Promise < UserDTO > {
         return this.initiateTrialAccountActivationUsingPOSTWithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
+    revokeTrialAccountActivationUsingPOSTURL(parameters: {
+        'login': string,
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/api/account/active-trial/revoke';
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * revokeTrialAccountActivation
+     * @method
+     * @name API#revokeTrialAccountActivationUsingPOST
+     * @param {} login - login
+     */
+    revokeTrialAccountActivationUsingPOSTWithHttpInfo(parameters: {
+        'login': string,
+        $queryParameters ? : any,
+        $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/api/account/active-trial/revoke';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+            headers['Content-Type'] = 'application/json';
+
+            if (parameters['login'] !== undefined) {
+                body = parameters['login'];
+            }
+
+            if (parameters['login'] === undefined) {
+                reject(new Error('Missing required  parameter: login'));
+                return;
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('POST', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * revokeTrialAccountActivation
+     * @method
+     * @name API#revokeTrialAccountActivationUsingPOST
+     * @param {} login - login
+     */
+    revokeTrialAccountActivationUsingPOST(parameters: {
+        'login': string,
+        $queryParameters ? : any,
+        $domain ? : string
+    }): Promise < UserDTO > {
+        return this.revokeTrialAccountActivationUsingPOSTWithHttpInfo(parameters).then(function(response: request.Response) {
             return response.body;
         });
     };
@@ -1849,7 +1918,7 @@ export default class API {
             return response.body;
         });
     };
-    authorizeUsingPOSTURL(parameters: {
+    authorizeUsingPOST_1URL(parameters: {
         'loginVm': LoginVM,
         $queryParameters ? : any
     }): string {
@@ -1869,10 +1938,10 @@ export default class API {
     /**
      * authorize
      * @method
-     * @name API#authorizeUsingPOST
+     * @name API#authorizeUsingPOST_1
      * @param {} loginVm - loginVM
      */
-    authorizeUsingPOSTWithHttpInfo(parameters: {
+    authorizeUsingPOST_1WithHttpInfo(parameters: {
         'loginVm': LoginVM,
         $queryParameters ? : any,
         $domain ? : string
@@ -1913,15 +1982,15 @@ export default class API {
     /**
      * authorize
      * @method
-     * @name API#authorizeUsingPOST
+     * @name API#authorizeUsingPOST_1
      * @param {} loginVm - loginVM
      */
-    authorizeUsingPOST(parameters: {
+    authorizeUsingPOST_1(parameters: {
         'loginVm': LoginVM,
         $queryParameters ? : any,
         $domain ? : string
     }): Promise < string > {
-        return this.authorizeUsingPOSTWithHttpInfo(parameters).then(function(response: request.Response) {
+        return this.authorizeUsingPOST_1WithHttpInfo(parameters).then(function(response: request.Response) {
             return response.body;
         });
     };
@@ -4299,7 +4368,7 @@ export default class API {
         'by': string,
         'cc' ? : string,
         'from': string,
-        'mailType': "ACTIVATION" | "CREATION" | "APPROVAL" | "API_ACCESS_APPROVAL" | "APPROVAL_ALIGN_LICENSE_WITH_COMPANY" | "REJECTION" | "REJECTION_US_SANCTION" | "REJECT_ALUMNI_ADDRESS" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "CLARIFY_USE_CASE" | "CLARIFY_DUPLICATE_USER" | "CLARIFY_REGISTRATION_INFO" | "CLARIFY_HOSPITAL_USE" | "CLARIFY_COMMERCIAL_USE" | "HOSPITAL_APPROVAL_HIGH_VOLUME" | "LICENSE_OPTIONS" | "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES" | "ACTIVATE_FREE_TRIAL" | "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE" | "TRIAL_ACCOUNT_IS_ACTIVATED" | "DATA_USAGE_EXCEEDS_THRESHOLD" | "TOKEN_HAS_BEEN_EXPOSED" | "TOKEN_HAS_BEEN_EXPOSED_USER" | "SEARCHING_RESPONSE_STRUCTURE_HAS_CHANGED" | "LIST_OF_UNAPPROVED_USERS" | "TERMINATION_NOTIFICATION_EMAIL" | "TEST"
+        'mailType': "ACTIVATION" | "CREATION" | "APPROVAL" | "API_ACCESS_APPROVAL" | "APPROVAL_ALIGN_LICENSE_WITH_COMPANY" | "REJECTION" | "REJECTION_US_SANCTION" | "REJECT_ALUMNI_ADDRESS" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "CLARIFY_USE_CASE" | "CLARIFY_DUPLICATE_USER" | "CLARIFY_REGISTRATION_INFO" | "CLARIFY_HOSPITAL_USE" | "HOSPITAL_APPROVAL_HIGH_VOLUME" | "CLARIFY_COMMERCIAL_USE" | "LICENSE_OPTIONS" | "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES" | "ACTIVATE_FREE_TRIAL" | "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE" | "TRIAL_ACCOUNT_IS_ACTIVATED" | "DATA_USAGE_EXCEEDS_THRESHOLD" | "TOKEN_HAS_BEEN_EXPOSED" | "TOKEN_HAS_BEEN_EXPOSED_USER" | "SEARCHING_RESPONSE_STRUCTURE_HAS_CHANGED" | "LIST_OF_UNAPPROVED_USERS" | "TERMINATION_NOTIFICATION_EMAIL" | "TEST",
         'to': string,
         $queryParameters ? : any
     }): string {
@@ -4349,7 +4418,7 @@ export default class API {
         'by': string,
         'cc' ? : string,
         'from': string,
-        'mailType': "ACTIVATION" | "CREATION" | "APPROVAL" | "API_ACCESS_APPROVAL" | "APPROVAL_ALIGN_LICENSE_WITH_COMPANY" | "REJECTION" | "REJECTION_US_SANCTION" | "REJECT_ALUMNI_ADDRESS" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "CLARIFY_USE_CASE" | "CLARIFY_DUPLICATE_USER" | "CLARIFY_REGISTRATION_INFO" | "CLARIFY_HOSPITAL_USE" | "CLARIFY_COMMERCIAL_USE" | "HOSPITAL_APPROVAL_HIGH_VOLUME" | "LICENSE_OPTIONS" | "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES" | "ACTIVATE_FREE_TRIAL" | "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE" | "TRIAL_ACCOUNT_IS_ACTIVATED" | "DATA_USAGE_EXCEEDS_THRESHOLD" | "TOKEN_HAS_BEEN_EXPOSED" | "TOKEN_HAS_BEEN_EXPOSED_USER" | "SEARCHING_RESPONSE_STRUCTURE_HAS_CHANGED" | "LIST_OF_UNAPPROVED_USERS" | "TERMINATION_NOTIFICATION_EMAIL" | "TEST",
+        'mailType': "ACTIVATION" | "CREATION" | "APPROVAL" | "API_ACCESS_APPROVAL" | "APPROVAL_ALIGN_LICENSE_WITH_COMPANY" | "REJECTION" | "REJECTION_US_SANCTION" | "REJECT_ALUMNI_ADDRESS" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "CLARIFY_USE_CASE" | "CLARIFY_DUPLICATE_USER" | "CLARIFY_REGISTRATION_INFO" | "CLARIFY_HOSPITAL_USE" | "HOSPITAL_APPROVAL_HIGH_VOLUME" | "CLARIFY_COMMERCIAL_USE" | "LICENSE_OPTIONS" | "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES" | "ACTIVATE_FREE_TRIAL" | "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE" | "TRIAL_ACCOUNT_IS_ACTIVATED" | "DATA_USAGE_EXCEEDS_THRESHOLD" | "TOKEN_HAS_BEEN_EXPOSED" | "TOKEN_HAS_BEEN_EXPOSED_USER" | "SEARCHING_RESPONSE_STRUCTURE_HAS_CHANGED" | "LIST_OF_UNAPPROVED_USERS" | "TERMINATION_NOTIFICATION_EMAIL" | "TEST",
         'to': string,
         $queryParameters ? : any,
         $domain ? : string
@@ -4432,7 +4501,7 @@ export default class API {
         'by': string,
         'cc' ? : string,
         'from': string,
-        'mailType': "ACTIVATION" | "CREATION" | "APPROVAL" | "API_ACCESS_APPROVAL" | "APPROVAL_ALIGN_LICENSE_WITH_COMPANY" | "REJECTION" | "REJECTION_US_SANCTION" | "REJECT_ALUMNI_ADDRESS" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "CLARIFY_USE_CASE" | "CLARIFY_DUPLICATE_USER" | "CLARIFY_REGISTRATION_INFO" | "CLARIFY_HOSPITAL_USE" | "CLARIFY_COMMERCIAL_USE" | "HOSPITAL_APPROVAL_HIGH_VOLUME" | "LICENSE_OPTIONS" | "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES" | "ACTIVATE_FREE_TRIAL" | "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE" | "TRIAL_ACCOUNT_IS_ACTIVATED" | "DATA_USAGE_EXCEEDS_THRESHOLD" | "TOKEN_HAS_BEEN_EXPOSED" | "TOKEN_HAS_BEEN_EXPOSED_USER" | "SEARCHING_RESPONSE_STRUCTURE_HAS_CHANGED" | "LIST_OF_UNAPPROVED_USERS" | "TERMINATION_NOTIFICATION_EMAIL" | "TEST",
+        'mailType': "ACTIVATION" | "CREATION" | "APPROVAL" | "API_ACCESS_APPROVAL" | "APPROVAL_ALIGN_LICENSE_WITH_COMPANY" | "REJECTION" | "REJECTION_US_SANCTION" | "REJECT_ALUMNI_ADDRESS" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "CLARIFY_USE_CASE" | "CLARIFY_DUPLICATE_USER" | "CLARIFY_REGISTRATION_INFO" | "CLARIFY_HOSPITAL_USE" | "HOSPITAL_APPROVAL_HIGH_VOLUME" | "CLARIFY_COMMERCIAL_USE" | "LICENSE_OPTIONS" | "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES" | "ACTIVATE_FREE_TRIAL" | "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE" | "TRIAL_ACCOUNT_IS_ACTIVATED" | "DATA_USAGE_EXCEEDS_THRESHOLD" | "TOKEN_HAS_BEEN_EXPOSED" | "TOKEN_HAS_BEEN_EXPOSED_USER" | "SEARCHING_RESPONSE_STRUCTURE_HAS_CHANGED" | "LIST_OF_UNAPPROVED_USERS" | "TERMINATION_NOTIFICATION_EMAIL" | "TEST",
         'to': string,
         $queryParameters ? : any,
         $domain ? : string
@@ -7783,4 +7852,130 @@ export default class API {
                 return response.body;
             });
         };
+    authorizeUsingPOSTURL(parameters: {
+        'authenticated' ? : boolean,
+        'authorities0Authority' ? : string,
+        'credentials' ? : {},
+        'details' ? : {},
+        'principal' ? : {},
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/oauth2/oncokb-token';
+        if (parameters['authenticated'] !== undefined) {
+            queryParameters['authenticated'] = parameters['authenticated'];
+        }
+
+        if (parameters['authorities0Authority'] !== undefined) {
+            queryParameters['authorities[0].authority'] = parameters['authorities0Authority'];
+        }
+
+        if (parameters['credentials'] !== undefined) {
+            queryParameters['credentials'] = parameters['credentials'];
+        }
+
+        if (parameters['details'] !== undefined) {
+            queryParameters['details'] = parameters['details'];
+        }
+
+        if (parameters['principal'] !== undefined) {
+            queryParameters['principal'] = parameters['principal'];
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * authorize
+     * @method
+     * @name API#authorizeUsingPOST
+     * @param {boolean} authenticated - OncoKB™ is a precision oncology knowledge base developed at Memorial Sloan Kettering Cancer Center that contains biological and clinical information about genomic alterations in cancer.
+     * @param {string} authorities0Authority - OncoKB™ is a precision oncology knowledge base developed at Memorial Sloan Kettering Cancer Center that contains biological and clinical information about genomic alterations in cancer.
+     * @param {object} credentials - OncoKB™ is a precision oncology knowledge base developed at Memorial Sloan Kettering Cancer Center that contains biological and clinical information about genomic alterations in cancer.
+     * @param {object} details - OncoKB™ is a precision oncology knowledge base developed at Memorial Sloan Kettering Cancer Center that contains biological and clinical information about genomic alterations in cancer.
+     * @param {object} principal - OncoKB™ is a precision oncology knowledge base developed at Memorial Sloan Kettering Cancer Center that contains biological and clinical information about genomic alterations in cancer.
+     */
+    authorizeUsingPOSTWithHttpInfo(parameters: {
+        'authenticated' ? : boolean,
+        'authorities0Authority' ? : string,
+        'credentials' ? : {},
+        'details' ? : {},
+        'principal' ? : {},
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/oauth2/oncokb-token';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+            headers['Content-Type'] = 'application/json';
+
+            if (parameters['authenticated'] !== undefined) {
+                queryParameters['authenticated'] = parameters['authenticated'];
+            }
+
+            if (parameters['authorities0Authority'] !== undefined) {
+                queryParameters['authorities[0].authority'] = parameters['authorities0Authority'];
+            }
+
+            if (parameters['credentials'] !== undefined) {
+                queryParameters['credentials'] = parameters['credentials'];
+            }
+
+            if (parameters['details'] !== undefined) {
+                queryParameters['details'] = parameters['details'];
+            }
+
+            if (parameters['principal'] !== undefined) {
+                queryParameters['principal'] = parameters['principal'];
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('POST', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * authorize
+     * @method
+     * @name API#authorizeUsingPOST
+     * @param {boolean} authenticated - OncoKB™ is a precision oncology knowledge base developed at Memorial Sloan Kettering Cancer Center that contains biological and clinical information about genomic alterations in cancer.
+     * @param {string} authorities0Authority - OncoKB™ is a precision oncology knowledge base developed at Memorial Sloan Kettering Cancer Center that contains biological and clinical information about genomic alterations in cancer.
+     * @param {object} credentials - OncoKB™ is a precision oncology knowledge base developed at Memorial Sloan Kettering Cancer Center that contains biological and clinical information about genomic alterations in cancer.
+     * @param {object} details - OncoKB™ is a precision oncology knowledge base developed at Memorial Sloan Kettering Cancer Center that contains biological and clinical information about genomic alterations in cancer.
+     * @param {object} principal - OncoKB™ is a precision oncology knowledge base developed at Memorial Sloan Kettering Cancer Center that contains biological and clinical information about genomic alterations in cancer.
+     */
+    authorizeUsingPOST(parameters: {
+        'authenticated' ? : boolean,
+        'authorities0Authority' ? : string,
+        'credentials' ? : {},
+        'details' ? : {},
+        'principal' ? : {},
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < string > {
+        return this.authorizeUsingPOSTWithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
 }

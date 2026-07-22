@@ -497,6 +497,23 @@ export default class UserPage extends React.Component<IUserPage> {
   }
 
   @autobind
+  @action
+  revokeTrialPeriod() {
+    client
+      .revokeTrialAccountActivationUsingPOST({
+        login: this.user.login,
+      })
+      .then(
+        updatedUser => {
+          this.user = updatedUser;
+          this.getUserTokens();
+          notifySuccess('Revoked trial period');
+        },
+        (error: Error) => notifyError(error)
+      );
+  }
+
+  @autobind
   onClickTrialAccountButton() {
     if (this.trialInitiated) {
       this.showTrialAccountModal = true;
@@ -684,6 +701,11 @@ export default class UserPage extends React.Component<IUserPage> {
                                   Extend Trial Access
                                 </QuickToolButton>
                               </DefaultTooltip>
+                            )}
+                            {this.trialInitiated && (
+                              <QuickToolButton onClick={this.revokeTrialPeriod}>
+                                Revoke Trial Period
+                              </QuickToolButton>
                             )}
                             <QuickToolButton
                               onClick={() =>

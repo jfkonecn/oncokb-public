@@ -153,6 +153,7 @@ public class TokenSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/account/authenticate-genomic-report").hasAnyAuthority(AuthoritiesConstants.ROLE_GENOMIC_REPORT)
             .antMatchers("/api/account/generate-reset-key").hasAnyAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/api/account/active-trial/init").hasAnyAuthority(AuthoritiesConstants.ADMIN)
+            .antMatchers("/api/account/active-trial/revoke").hasAnyAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/api/account/active-trial/finish").permitAll()
             .antMatchers("/api/account/active-trial/info").permitAll()
             .antMatchers("/api/account/**").hasAnyAuthority(AuthoritiesConstants.USER)

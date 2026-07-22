@@ -1,5 +1,6 @@
 package org.mskcc.cbio.oncokb.service;
 
+import com.google.gson.Gson;
 import org.mskcc.cbio.oncokb.OncokbPublicApp;
 import org.mskcc.cbio.oncokb.config.Constants;
 import org.mskcc.cbio.oncokb.domain.Token;
@@ -10,7 +11,9 @@ import org.mskcc.cbio.oncokb.domain.enumeration.LicenseType;
 import org.mskcc.cbio.oncokb.repository.UserDetailsRepository;
 import org.mskcc.cbio.oncokb.repository.UserRepository;
 import org.mskcc.cbio.oncokb.service.dto.UserDTO;
+import org.mskcc.cbio.oncokb.service.dto.useradditionalinfo.Activation;
 import org.mskcc.cbio.oncokb.service.dto.useradditionalinfo.AdditionalInfoDTO;
+import org.mskcc.cbio.oncokb.service.dto.useradditionalinfo.ApiAccessRequest;
 import org.mskcc.cbio.oncokb.service.dto.useradditionalinfo.TrialAccount;
 import org.mskcc.cbio.oncokb.service.mapper.UserMapper;
 
@@ -40,6 +43,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.within;
 import static org.mockito.Mockito.when;
 
@@ -637,5 +641,163 @@ public class UserServiceIT {
         assertThat(reloadedUser.get().getEmail()).isEqualTo("trial-test@example.com");
         assertThat(reloadedUser.get().getFirstName()).isEqualTo("Test");
         assertThat(reloadedUser.get().getLastName()).isEqualTo("User");
+    }
+
+    @Test
+    @Transactional
+    public void assertThatFinishTrialAccountActivationReturnsEmptyWhenTrialDataPathFieldsAreMissing() {
+        assertThatThrownBy(() -> userService.finishTrialAccountActivation("missing-trial-key-" + UUID.randomUUID().toString().substring(0, 8)))
+            .isInstanceOf(java.util.NoSuchElementException.class);
+
+        List<AdditionalInfoDTO> scenarios = new ArrayList<>();
+
+        AdditionalInfoDTO noTrialAccount = new AdditionalInfoDTO();
+        scenarios.add(noTrialAccount);
+
+        AdditionalInfoDTO noActivation = new AdditionalInfoDTO();
+        noActivation.setTrialAccount(new TrialAccount());
+        scenarios.add(noActivation);
+
+        AdditionalInfoDTO noActivationKey = new AdditionalInfoDTO();
+        TrialAccount trialAccountWithActivationNoKey = new TrialAccount();
+        trialAccountWithActivationNoKey.setActivation(new Activation());
+        noActivationKey.setTrialAccount(trialAccountWithActivationNoKey);
+        scenarios.add(noActivationKey);
+
+        for (int i = 0; i < scenarios.size(); i++) {
+            String key = "trial-missing-field-key-" + i + "-" + UUID.randomUUID().toString().substring(0, 8);
+            User missingFieldUser = new User();
+            missingFieldUser.setLogin("trial-missing-field-" + i + "-" + UUID.randomUUID().toString().substring(0, 6));
+            missingFieldUser.setEmail("trial-missing-field-" + i + "-" + UUID.randomUUID().toString().substring(0, 6) + "@example.com");
+            missingFieldUser.setPassword(RandomStringUtils.random(60));
+            missingFieldUser.setActivated(false);
+            missingFieldUser.setFirstName("Trial");
+            missingFieldUser.setLastName("MissingField");
+            missingFieldUser.setImageUrl(DEFAULT_IMAGEURL);
+            missingFieldUser.setLangKey(DEFAULT_LANGKEY);
+            missingFieldUser = userRepository.saveAndFlush(missingFieldUser);
+
+            AdditionalInfoDTO additionalInfoDTO = scenarios.get(i);
+            ApiAccessRequest apiAccessRequest = new ApiAccessRequest();
+            apiAccessRequest.setJustification(key);
+            additionalInfoDTO.setApiAccessRequest(apiAccessRequest);
+
+            UserDetails userDetails = new UserDetails();
+            userDetails.setUser(missingFieldUser);
+            userDetails.setAccountRequestStatus(AccountRequestStatus.APPROVED);
+            userDetails.setAdditionalInfo(new Gson().toJson(additionalInfoDTO));
+            userDetailsRepository.saveAndFlush(userDetails);
+
+            Optional<UserDTO> finishResult = userService.finishTrialAccountActivation(key);
+            assertThat(finishResult).isNotPresent();
+        }
+    }
+
+    @Test
+    @Transactional
+    public void assertThatFinishTrialAccountActivationReturnsEmptyWhenLicenseAgreementMissing() {
+        String key = "trial-missing-license-agreement-" + UUID.randomUUID().toString().substring(0, 8);
+
+        User userMissingLicenseAgreement = new User();
+        userMissingLicenseAgreement.setLogin("trial-missing-license-" + UUID.randomUUID().toString().substring(0, 6));
+        userMissingLicenseAgreement.setEmail("trial-missing-license-" + UUID.randomUUID().toString().substring(0, 6) + "@example.com");
+        userMissingLicenseAgreement.setPassword(RandomStringUtils.random(60));
+        userMissingLicenseAgreement.setActivated(false);
+        userMissingLicenseAgreement.setFirstName("Trial");
+        userMissingLicenseAgreement.setLastName("MissingLicenseAgreement");
+        userMissingLicenseAgreement.setImageUrl(DEFAULT_IMAGEURL);
+        userMissingLicenseAgreement.setLangKey(DEFAULT_LANGKEY);
+        userMissingLicenseAgreement = userRepository.saveAndFlush(userMissingLicenseAgreement);
+
+        AdditionalInfoDTO additionalInfoDTO = new AdditionalInfoDTO();
+        TrialAccount trialAccount = new TrialAccount();
+        Activation activation = new Activation();
+        activation.setKey(key);
+        trialAccount.setActivation(activation);
+        additionalInfoDTO.setTrialAccount(trialAccount);
+
+        UserDetails userDetails = new UserDetails();
+        userDetails.setUser(userMissingLicenseAgreement);
+        userDetails.setAccountRequestStatus(AccountRequestStatus.APPROVED);
+        userDetails.setAdditionalInfo(new Gson().toJson(additionalInfoDTO));
+        userDetailsRepository.saveAndFlush(userDetails);
+
+        assertThatThrownBy(() -> userService.finishTrialAccountActivation(key))
+            .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    @Transactional
+    public void assertThatRevokeTrialAccountActivationPreventsFinishingAndRespectsGracePeriodRules() {
+        User trialUser = new User();
+        trialUser.setLogin("trial-revoke-regular-" + UUID.randomUUID().toString().substring(0, 6));
+        trialUser.setEmail("trial-revoke-regular-" + UUID.randomUUID().toString().substring(0, 6) + "@example.com");
+        trialUser.setPassword(RandomStringUtils.random(60));
+        trialUser.setActivated(false);
+        trialUser.setFirstName("Trial");
+        trialUser.setLastName("Revoked");
+        trialUser.setImageUrl(DEFAULT_IMAGEURL);
+        trialUser.setLangKey(DEFAULT_LANGKEY);
+        trialUser = userRepository.saveAndFlush(trialUser);
+
+        Optional<User> initiated = userService.initiateTrialAccountActivation(trialUser.getLogin());
+        assertThat(initiated).isPresent();
+        String trialKey = userMapper.userToUserDTO(initiated.get())
+            .getAdditionalInfo()
+            .getTrialAccount()
+            .getActivation()
+            .getKey();
+
+        Optional<UserDTO> revokeResult = userService.revokeTrialAccountActivation(trialUser.getLogin());
+        assertThat(revokeResult).isPresent();
+        assertThat(revokeResult.get().isActivated()).isFalse();
+        assertThat(revokeResult.get().getAdditionalInfo()).isNotNull();
+        assertThat(revokeResult.get().getAdditionalInfo().getTrialAccount()).isNull();
+        assertThat(revokeResult.get().getAccountRequestStatus()).isEqualTo(AccountRequestStatus.PENDING);
+
+        User updatedUser = userRepository.findOneWithAuthoritiesByLogin(trialUser.getLogin()).orElse(null);
+        UserDetails updatedUserDetails = userDetailsRepository.findOneByUser(updatedUser).orElse(null);
+        assertThat(updatedUser).isNotNull();
+        assertThat(updatedUser.getActivated()).isFalse();
+        assertThat(updatedUserDetails).isNotNull();
+        assertThat(updatedUserDetails.getAccountRequestStatus()).isEqualTo(AccountRequestStatus.PENDING);
+        UserDTO updatedUserDTO = userMapper.userToUserDTO(updatedUser);
+        assertThat(updatedUserDTO.getAdditionalInfo()).isNotNull();
+        assertThat(updatedUserDTO.getAdditionalInfo().getTrialAccount()).isNull();
+
+        assertThatThrownBy(() -> userService.finishTrialAccountActivation(trialKey))
+            .isInstanceOf(java.util.NoSuchElementException.class);
+
+        UserDetails userDetailsAfterFailedFinish = userDetailsRepository.findOneByUser(updatedUser).orElse(null);
+        assertThat(userDetailsAfterFailedFinish).isNotNull();
+        assertThat(userDetailsAfterFailedFinish.getAccountRequestStatus()).isEqualTo(AccountRequestStatus.PENDING);
+    }
+
+    @Test
+    @Transactional
+    public void assertThatRevokeTrialAccountActivationUsesPendingNoGraceForBlacklistedDomain() {
+        User trialUser = new User();
+        trialUser.setLogin("trial-revoke-blacklisted-" + UUID.randomUUID().toString().substring(0, 6));
+        trialUser.setEmail("trial-revoke-blacklisted-" + UUID.randomUUID().toString().substring(0, 6) + "@gmail.com");
+        trialUser.setPassword(RandomStringUtils.random(60));
+        trialUser.setActivated(false);
+        trialUser.setFirstName("Trial");
+        trialUser.setLastName("Revoked");
+        trialUser.setImageUrl(DEFAULT_IMAGEURL);
+        trialUser.setLangKey(DEFAULT_LANGKEY);
+        trialUser = userRepository.saveAndFlush(trialUser);
+
+        Optional<User> initiated = userService.initiateTrialAccountActivation(trialUser.getLogin());
+        assertThat(initiated).isPresent();
+
+        Optional<UserDTO> revokeResult = userService.revokeTrialAccountActivation(trialUser.getLogin());
+        assertThat(revokeResult).isPresent();
+        assertThat(revokeResult.get().getAccountRequestStatus()).isEqualTo(AccountRequestStatus.PENDING_NO_GRACE_PERIOD);
+
+        User updatedUser = userRepository.findOneWithAuthoritiesByLogin(trialUser.getLogin()).orElse(null);
+        UserDetails updatedUserDetails = userDetailsRepository.findOneByUser(updatedUser).orElse(null);
+        assertThat(updatedUser).isNotNull();
+        assertThat(updatedUserDetails).isNotNull();
+        assertThat(updatedUserDetails.getAccountRequestStatus()).isEqualTo(AccountRequestStatus.PENDING_NO_GRACE_PERIOD);
     }
 }

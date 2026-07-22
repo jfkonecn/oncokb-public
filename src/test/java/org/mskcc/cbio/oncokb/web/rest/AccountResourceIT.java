@@ -1057,6 +1057,60 @@ public class AccountResourceIT {
 
     @Test
     @Transactional
+    @WithMockUser(authorities = AuthoritiesConstants.ADMIN)
+    public void testRevokeTrialAccountActivationSetsAccountRequestStatusPendingAndDeactivatesUser() throws Exception {
+        User user = new User();
+        user.setLogin("trial-revoke-rest");
+        user.setEmail("trial-revoke-rest@example.com");
+        user.setPassword(RandomStringUtils.random(60));
+        user.setActivated(false);
+        userRepository.saveAndFlush(user);
+
+        restAccountMockMvc.perform(
+                post("/api/account/active-trial/init")
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .content(user.getLogin()))
+            .andExpect(status().isOk());
+
+        restAccountMockMvc.perform(
+                post("/api/account/active-trial/revoke")
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .content(user.getLogin()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.activated").value(false));
+
+        User updatedUser = userRepository.findOneWithAuthoritiesByLogin(user.getLogin()).orElse(null);
+        UserDetails userDetails = userDetailsRepository.findOneByUser(updatedUser).orElse(null);
+        assertThat(updatedUser).isNotNull();
+        assertThat(updatedUser.getActivated()).isFalse();
+        assertThat(userDetails).isNotNull();
+        assertThat(userDetails.getAccountRequestStatus()).isEqualTo(AccountRequestStatus.PENDING);
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser(authorities = AuthoritiesConstants.ADMIN)
+    public void testRevokeTrialAccountActivationReturnsErrorForUnknownUser() throws Exception {
+        restAccountMockMvc.perform(
+                post("/api/account/active-trial/revoke")
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .content("user-does-not-exist"))
+            .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser("trial-revoke-no-admin")
+    public void testRevokeTrialAccountActivationIsForbiddenForNonAdmin() throws Exception {
+        restAccountMockMvc.perform(
+                post("/api/account/active-trial/revoke")
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .content("any-user"))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @Transactional
     @WithMockUser("save-existing-email")
     public void testSaveExistingEmail() throws Exception {
         User user = new User();

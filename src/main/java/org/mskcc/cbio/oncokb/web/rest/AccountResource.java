@@ -475,6 +475,16 @@ public class AccountResource {
         }
     }
 
+    @PostMapping(path = "/account/active-trial/revoke")
+    public UserDTO revokeTrialAccountActivation(@RequestBody String login) {
+        Optional<UserDTO> user = userService.revokeTrialAccountActivation(login);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new CustomMessageRuntimeException("No user was found");
+        }
+    }
+
     @PostMapping(path = "/account/active-trial/finish")
     public UserDTO finishTrialAccountActivation(@RequestBody KeyAndTermsVM keyAndTermsVM) {
         if (keyAndTermsVM.getReadAndAgreeWithTheTerms() != Boolean.TRUE) {

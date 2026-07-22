@@ -262,6 +262,40 @@ public class UserService {
         return Optional.empty();
     }
 
+    public Optional<UserDTO> revokeTrialAccountActivation(String login) {
+        Optional<User> userOptional = userRepository.findOneWithAuthoritiesByLogin(login);
+        if (!userOptional.isPresent()) {
+            return Optional.empty();
+        }
+
+        User user = userOptional.get();
+        UserDTO userDTO = userMapper.userToUserDTO(user);
+        if (userDTO.getAdditionalInfo() == null) {
+            userDTO.setAdditionalInfo(new AdditionalInfoDTO());
+        }
+        userDTO.getAdditionalInfo().setTrialAccount(null);
+        userDTO.setActivated(false);
+
+        Optional<UserDTO> updatedUserDTO = updateUserAndTokens(userDTO);
+        if (!updatedUserDTO.isPresent()) {
+            return Optional.empty();
+        }
+
+        AccountRequestStatus pendingStatus = gracePeriodBlackListService.shouldSkipGracePeriod(user.getEmail())
+            ? AccountRequestStatus.PENDING_NO_GRACE_PERIOD
+            : AccountRequestStatus.PENDING;
+        UserDetails userDetails = userDetailsRepository.findOneByUser(user).orElseGet(() -> {
+            UserDetails ud = new UserDetails();
+            ud.setUser(user);
+            return ud;
+        });
+        userDetails.setAccountRequestStatus(pendingStatus);
+        userDetailsRepository.save(userDetails);
+
+        updatedUserDTO.get().setAccountRequestStatus(pendingStatus);
+        return updatedUserDTO;
+    }
+
     private TrialAccount initiateTrialAccountInfo() {
         TrialAccount trialAccount = new TrialAccount();
         Activation activation = new Activation();
